@@ -410,10 +410,6 @@ static void bcl_calculate_iavail_trigger(void)
  */
 static void bcl_iavail_work(struct work_struct *work)
 {
-<<<<<<< HEAD
-=======
-	int vbatt = 0;
->>>>>>> 4cbe44b... O3 - thanks to sultanqasim
 	struct bcl_context *bcl = container_of(work,
 			struct bcl_context, bcl_iavail_work.work);
 
@@ -1681,3 +1677,4 @@ module_exit(bcl_exit);
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("battery current limit driver");
 MODULE_ALIAS("platform:" BCL_DEV_NAME);
+
