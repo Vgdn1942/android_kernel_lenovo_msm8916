@@ -137,6 +137,7 @@ config DEVFREQ_GOV_MSM_CACHE_HWMON
 	  conflict with existing profiling tools.  This governor is unlikely
 	  to be useful for other devices.
 
+<<<<<<< HEAD
 config DEVFREQ_GOV_SPDM_HYP
 	bool "MSM SPDM Hypervisor Governor"
 	depends on ARCH_MSM
@@ -145,6 +146,13 @@ config DEVFREQ_GOV_SPDM_HYP
 	  for MSM chipsets.
 	  Sets the frequency using a "on-demand" algorithm.
 	  This governor is unlikely to be useful for other devices.
+=======
+config SIMPLE_GPU_ALGORITHM
+	bool "Simple GPU algorithm"
+	depends on DEVFREQ_GOV_MSM_ADRENO_TZ
+	help
+	  Simple user configurable GPU controlling algorithm
+>>>>>>> ac16bab... Simple GPU Algorithm: Initial coding for devfreq based Adreno Drivers
 
 comment "DEVFREQ Drivers"
 
