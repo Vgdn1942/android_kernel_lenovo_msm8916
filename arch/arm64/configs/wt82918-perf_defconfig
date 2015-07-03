@@ -412,7 +412,22 @@ CONFIG_CPU_FREQ_GOV_POWERSAVE=y
 CONFIG_CPU_FREQ_GOV_USERSPACE=y
 CONFIG_CPU_FREQ_GOV_ONDEMAND=y
 CONFIG_CPU_FREQ_GOV_INTERACTIVE=y
+<<<<<<< HEAD:arch/arm64/configs/wt82918-perf_defconfig
 # CONFIG_CPU_FREQ_GOV_CONSERVATIVE is not set
+=======
+CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
+CONFIG_CPU_FREQ_GOV_ALUCARD=y
+CONFIG_CPU_FREQ_GOV_ELEMENTALX=y
+CONFIG_CPU_FREQ_GOV_IMPULSE=y
+CONFIG_CPU_FREQ_GOV_DARKNESS=y
+CONFIG_CPU_FREQ_GOV_YANKACTIVE=y
+CONFIG_INTELLI_PLUG=y
+CONFIG_ALUCARD_HOTPLUG=y
+CONFIG_BRICKED_HOTPLUG=y
+CONFIG_MSM_HOTPLUG=y
+CONFIG_MSM_SLEEPER=y
+CONFIG_THUNDERPLUG_CONTROL=y
+>>>>>>> ba3f4a1... Add Lots of Hotplug for user to Choose..:arch/arm64/configs/cyanogenmod_tomato-64_defconfig
 CONFIG_CPU_BOOST=y
 # CONFIG_GENERIC_CPUFREQ_CPU0 is not set
 
@@ -3299,8 +3314,57 @@ CONFIG_BUS_TOPOLOGY_ADHOC=y
 # CONFIG_DEBUG_BUS_VOTER is not set
 # CONFIG_I2C_MSM_PROF_DBG is not set
 # CONFIG_MSM_UIM_HSL is not set
+<<<<<<< HEAD:arch/arm64/configs/wt82918-perf_defconfig
 CONFIG_QPNP_HAPTIC=y
 # CONFIG_SEEMP_CORE is not set
+=======
+# CONFIG_QPNP_HAPTIC is not set
+# CONFIG_QMP_CORE is not set
+# CONFIG_MACH_CKT is not set
+# CONFIG_MACH_CKT_MSM8939 is not set
+
+#
+# CK Telecom board selection
+#
+# CONFIG_MACH_SPIRIT is not set
+# CONFIG_MACH_HAIER is not set
+# CONFIG_MACH_HAIER_MSM8916 is not set
+
+#
+# Haier board selection
+#
+# CONFIG_MACH_RENDANG is not set
+# CONFIG_MACH_WINGTECH is not set
+# CONFIG_MACH_WINGTECH_MSM8916 is not set
+
+#
+# Wingtech board selection
+#
+# CONFIG_MACH_T86519A1 is not set
+CONFIG_MACH_YULONG=y
+CONFIG_MACH_YULONG_MSM8939=y
+
+
+#
+# Yulong board selection
+#
+CONFIG_MACH_CP8675=y
+
+#
+# Yulong debug selection
+#
+# CONFIG_ANDROID_DEV_DEBUG is not set
+CONFIG_YULONG_DEBUG=y
+CONFIG_YULONG_MODULE_MANAGEMENT=y
+# CONFIG_YULONG_USB_UART_SWITCH is not set
+# CONFIG_YL_DEBUG is not set
+# CONFIG_APP_PROFILE is not set
+
+#
+# Yulong features
+#
+CONFIG_YL_POWEROFF_ALARM=y
+>>>>>>> ba3f4a1... Add Lots of Hotplug for user to Choose..:arch/arm64/configs/cyanogenmod_tomato-64_defconfig
 CONFIG_CLKDEV_LOOKUP=y
 CONFIG_HAVE_CLK_PREPARE=y
 # CONFIG_MSM_CLK_CONTROLLER_V2 is not set
