@@ -420,6 +420,17 @@ CONFIG_CPU_FREQ_GOV_IMPULSE=y
 CONFIG_CPU_FREQ_GOV_DARKNESS=y
 CONFIG_CPU_FREQ_GOV_YANKACTIVE=y
 CONFIG_ALUCARD_HOTPLUG=y
+<<<<<<< HEAD:arch/arm64/configs/wt82918-perf_defconfig
+=======
+CONFIG_BRICKED_HOTPLUG=y
+# CONFIG_INTELLI_PLUG is not set
+# CONFIG_MSM_HOTPLUG is not set
+# CONFIG_MSM_SLEEPER is not set
+CONFIG_MAKO_HOTPLUG=y
+CONFIG_ZEN_DECISION=y
+CONFIG_ASMP=y
+CONFIG_THUNDERPLUG_CONTROL=y
+>>>>>>> f8d711f... Added Hotplugs autosmp zendecision. etc.. and disabled bricked and alucard:arch/arm64/configs/cyanogenmod_tomato-64_defconfig
 CONFIG_CPU_BOOST=y
 # CONFIG_GENERIC_CPUFREQ_CPU0 is not set
 
