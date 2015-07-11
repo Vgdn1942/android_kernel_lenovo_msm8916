@@ -1250,6 +1250,66 @@ int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs)
 	}
 
 	INIT_LIST_HEAD(&adsp->alg_regions);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&adsp->ctl_list);
+	INIT_WORK(&adsp->boot_work, wm_adsp2_boot_work);
+	mutex_init(&adsp->ctl_lock);
+	mutex_init(&adsp->rate_lock);
+
+	adsp->fw_lock = fw_lock;
+
+	if (!adsp->num_firmwares) {
+		if (!adsp->dev->of_node || wm_adsp_of_parse_adsp(adsp) <= 0) {
+			adsp->num_firmwares = WM_ADSP_NUM_FW;
+			adsp->firmwares = wm_adsp_fw;
+		}
+	} else {
+		ctl_names = devm_kzalloc(adsp->dev,
+				adsp->num_firmwares * sizeof(const char *),
+				GFP_KERNEL);
+
+		for (i = 0; i < adsp->num_firmwares; i++)
+			ctl_names[i] = adsp->firmwares[i].name;
+
+		wm_adsp_fw_enum[adsp->num - 1].max = adsp->num_firmwares;
+		wm_adsp_fw_enum[adsp->num - 1].texts = ctl_names;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(wm_adsp2_init);
+
+MODULE_LICENSE("GPL v2");
+
+bool wm_adsp_compress_supported(const struct wm_adsp *adsp,
+				const struct snd_compr_stream *stream)
+{
+	if (adsp->fw >= 0 && adsp->fw < adsp->num_firmwares) {
+		const struct wm_adsp_fw_defs *fw_defs =
+				&adsp->firmwares[adsp->fw];
+
+		if (fw_defs->num_caps == 0)
+			return false;
+
+		if (fw_defs->compr_direction == stream->direction)
+			return true;
+	}
+
+	return false;
+}
+EXPORT_SYMBOL_GPL(wm_adsp_compress_supported);
+
+bool wm_adsp_format_supported(const struct wm_adsp *adsp,
+			      const struct snd_compr_stream *stream,
+			      const struct snd_compr_params *params)
+{
+	const struct wm_adsp_fw_caps *caps;
+	int i, j;
+
+	for (i = 0; i < adsp->firmwares[adsp->fw].num_caps; i++) {
+		caps = &adsp->firmwares[adsp->fw].caps[i];
+>>>>>>> a0644f1... 3.10.55
 
 	if (dvfs) {
 		adsp->dvfs = devm_regulator_get(adsp->dev, "DCVDD");
