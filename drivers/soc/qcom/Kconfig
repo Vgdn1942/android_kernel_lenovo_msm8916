@@ -568,7 +568,7 @@ config MSM_HOTPLUG
 
 config STATE_NOTIFIER
         bool "State Notifier"
-	default n
+	default y
 
 source "drivers/soc/qcom/memshare/Kconfig"
 

@@ -4,6 +4,7 @@ SUBLEVEL = 56
 EXTRAVERSION = .2
 NAME = My little poney
 
+
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
 # More info can be located in ./README
@@ -14,14 +15,14 @@ NAME = My little poney
 # o  use make's built-in rules and variables
 #    (this increases performance and avoids hard-to-debug behaviour);
 # o  print "Entering directory ...";
-MAKEFLAGS += -rR --no-print-directory
+MAKEFLAGS += -rR --no-print-directory CONFIG_NO_ERROR_ON_MISMATCH=y 
 
 # Avoid funny character set dependencies
 unexport LC_ALL
 LC_COLLATE=C
 LC_NUMERIC=C
 export LC_COLLATE LC_NUMERIC
-
+export CONFIG_NO_ERROR_ON_MISMATCH=y 
 # We are using a recursive build, so we need to do a little thinking
 # to get the ordering right.
 #
@@ -673,7 +674,7 @@ endif
 
 # We trigger additional mismatches with less inlining
 ifdef CONFIG_DEBUG_SECTION_MISMATCH
-KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once)
+KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once) 
 endif
 
 # arch Makefile may override CC so keep this after arch Makefile is included
