@@ -565,6 +565,24 @@ config MSM_HOTPLUG
 	bool "MSM hotplug driver"
 	depends on HOTPLUG_CPU
 	default y
+
+config STATE_NOTIFIER
+        bool "State Notifier"
+	default n
+
+source "drivers/soc/qcom/memshare/Kconfig"
+
+config BOOTINFO
+	bool "Boot Information Feature"
+	default n
+	help
+	  This feature provides access to certain boot information
+	  from both kernel context (via function call) and user
+	  context (via /proc/bootinfo).
+
+config MMI_SOC_INFO
+	default n
+	bool "Motorola Mobility SOC Info"
 	help
 	  The MSM hotplug driver controls on-/offlining of additional cores based
 	  on current cpu load.
