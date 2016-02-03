@@ -39,8 +39,8 @@
 #define NCP6335D_MIN_VOLTAGE_UV		600000
 #define NCP6335D_STEP_VOLTAGE_UV	6250
 #define NCP6335D_VOLTAGE_STEPS		128
-#define NCP6335D_MIN_SLEW_NS		166
-#define NCP6335D_MAX_SLEW_NS		1333
+#define NCP6335D_MIN_SLEW_NS		128
+#define NCP6335D_MAX_SLEW_NS		1300
 
 /* bits */
 #define NCP6335D_ENABLE			BIT(7)
@@ -70,6 +70,8 @@ struct ncp6335d_info {
 	unsigned int min_slew_ns;
 	unsigned int max_slew_ns;
 	unsigned int peek_poke_address;
+
+	bool set_en_always;
 
 	struct dentry *debug_root;
 };
@@ -491,6 +493,9 @@ static int ncp6335d_parse_dt(struct i2c_client *client,
 		dev_err(&client->dev, "min set point missing: rc = %d.\n", rc);
 		return rc;
 	}
+
+	dd->set_en_always = of_property_read_bool(client->dev.of_node,
+				"onnn,set-en-always");
 
 	return rc;
 }
