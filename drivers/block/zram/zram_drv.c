@@ -32,6 +32,7 @@
 #include <linux/sysfs.h>
 #include <linux/ratelimit.h>
 #include <linux/show_mem_notifier.h>
+
 #ifdef CONFIG_STATE_NOTIFIER
 #include <linux/state_notifier.h>
 #endif
@@ -43,6 +44,8 @@ static DEFINE_IDR(zram_index_idr);
 static DEFINE_MUTEX(zram_index_mutex);
 
 static int zram_major;
+
+static struct zram *zram_devices;
 #ifdef CONFIG_ZRAM_LZ4_COMPRESS
 static const char *default_compressor = "lz4";
 #else
@@ -77,6 +80,7 @@ static inline bool init_done(struct zram *zram)
 	return zram->disksize;
 }
 
+
 static void zram_show_mem(struct zram *zram)
 {
 	if (!down_read_trylock(&zram->init_lock))
@@ -106,6 +110,7 @@ static int zram_show_mem_cb(int id, void *ptr, void *data)
 	return 0;
 }
 
+
 static int zram_show_mem_notifier(struct notifier_block *nb,
 				unsigned long action,
 				void *data)
@@ -114,6 +119,34 @@ static int zram_show_mem_notifier(struct notifier_block *nb,
 		return 0;
 
 	idr_for_each(&zram_index_idr, &zram_show_mem_cb, NULL);
+
+	int i;
+
+	if (!zram_devices)
+		return 0;
+
+	for (i = 0; i < num_devices; i++) {
+		struct zram *zram = &zram_devices[i];
+
+		if (!down_read_trylock(&zram->init_lock))
+			continue;
+
+		if (init_done(zram)) {
+			struct zram_meta *meta = zram->meta;
+			u64 val;
+			u64 data_size;
+
+			val = zs_get_total_pages(meta->mem_pool);
+			data_size = atomic64_read(&zram->stats.compr_data_size);
+			pr_info("Zram[%d] mem_used_total = %llu\n", i, val);
+			pr_info("Zram[%d] compr_data_size = %llu\n", i,
+				(unsigned long long)data_size);
+			pr_info("Zram[%d] orig_data_size = %llu\n", i,
+				(u64)atomic64_read(&zram->stats.pages_stored));
+		}
+
+		up_read(&zram->init_lock);
+	}
 
 	return 0;
 }
@@ -1483,12 +1516,17 @@ static int __init zram_init(void)
 		num_devices--;
 	}
 
+
 #ifdef CONFIG_STATE_NOTIFIER
 	notif.notifier_call = state_notifier_callback;
 	if (state_register_client(&notif))
 		pr_warn("Failed to register State notifier callback\n");
 #endif
 	show_mem_notifier_register(&zram_show_mem_notifier_block);
+
+	show_mem_notifier_register(&zram_show_mem_notifier_block);
+	pr_info("Created %u device(s)\n", num_devices);
+
 	return 0;
 
 out_error:
