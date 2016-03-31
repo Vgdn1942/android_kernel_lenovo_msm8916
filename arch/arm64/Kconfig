@@ -706,4 +706,6 @@ source "arch/arm64/mm/Kconfig"
 
 
 source "arch/arm64/hotplug/ALUCARD/Kconfig"
+source "arch/arm64/hotplug/CLUSTER_PLUG/Kconfig"
+
 
