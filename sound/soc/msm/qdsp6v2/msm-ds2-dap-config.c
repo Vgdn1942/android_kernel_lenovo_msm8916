@@ -1523,9 +1523,14 @@ static int msm_ds2_dap_get_param(u32 cmd, void *arg)
 	}
 
 	/* Return if invalid length */
+<<<<<<< HEAD
 	if ((dolby_data->length >
 	      (DOLBY_MAX_LENGTH_INDIVIDUAL_PARAM - DOLBY_PARAM_PAYLOAD_SIZE)) ||
 	      (dolby_data->length <= 0)) {
+=======
+	if (dolby_data->length >
+	       (DOLBY_MAX_LENGTH_INDIVIDUAL_PARAM - DOLBY_PARAM_PAYLOAD_SIZE)) {
+>>>>>>> b4b2f5c... ASoC: msm: qdsp6v2: DAP: Add check to validate data length
 		pr_err("Invalid length %d", dolby_data->length);
 		rc = -EINVAL;
 		goto end;
