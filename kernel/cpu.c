@@ -371,6 +371,12 @@ int __ref cpu_down(unsigned int cpu)
 
 	cpu_maps_update_begin();
 
+	if (cpu == 0)
+	{
+		err = -EBUSY;
+		goto out;
+	}
+
 	if (cpu_hotplug_disabled) {
 		err = -EBUSY;
 		goto out;
