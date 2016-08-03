@@ -603,6 +603,161 @@ static int max17042_init_chip(struct max17042_chip *chip)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void max17042_set_temp_threshold(struct max17042_chip *chip,
+					int max_c,
+					int min_c)
+{
+	u16 temp_tr;
+	s8 max;
+	s8 min;
+
+	max = (s8)max17042_find_temp_threshold(chip->pdata->tcnv, max_c,
+					       false);
+	min = (s8)max17042_find_temp_threshold(chip->pdata->tcnv, min_c,
+					       true);
+
+	temp_tr = 0;
+	temp_tr |= min;
+	temp_tr &= 0x00FF;
+
+	temp_tr |=  (max << 8) & 0xFF00;
+
+	pr_debug("Program Temp Thresholds = 0x%X\n", temp_tr);
+
+	max17042_write_reg(chip->client, MAX17042_TALRT_Th, temp_tr);
+}
+
+#define HYSTERISIS_DEGC 2
+static int max17042_check_temp(struct max17042_chip *chip)
+{
+	int batt_temp = 0;
+	int hotspot;
+	int max_t = 0;
+	int min_t = 0;
+	struct max17042_platform_data *pdata;
+	int temp_state = POWER_SUPPLY_HEALTH_GOOD;
+	union power_supply_propval ps = {0, };
+	const char *batt_psy_name;
+	int ret = 0;
+
+	if (!chip)
+		return 0;
+
+	mutex_lock(&chip->check_temp_lock);
+	pdata = chip->pdata;
+
+	max17042_read_temp(chip, &batt_temp);
+
+	/* Convert to Degrees C */
+	batt_temp /= 10;
+	hotspot = chip->hotspot_temp / 1000;
+
+	/* Override batt_temp if battery hot spot condition
+	   is active */
+	if ((batt_temp > pdata->cool_temp_c) &&
+	    (hotspot > batt_temp) &&
+	    (hotspot >= pdata->hotspot_thrs_c)) {
+		batt_temp = hotspot;
+	}
+
+	if (chip->temp_state == POWER_SUPPLY_HEALTH_WARM) {
+		if (batt_temp >= pdata->hot_temp_c)
+			/* Warm to Hot */
+			temp_state = POWER_SUPPLY_HEALTH_OVERHEAT;
+		else if (batt_temp <=
+			 pdata->warm_temp_c - HYSTERISIS_DEGC)
+			/* Warm to Normal */
+			temp_state = POWER_SUPPLY_HEALTH_GOOD;
+		else
+			/* Stay Warm */
+			temp_state = POWER_SUPPLY_HEALTH_WARM;
+	} else if ((chip->temp_state == POWER_SUPPLY_HEALTH_GOOD) ||
+		   (chip->temp_state == POWER_SUPPLY_HEALTH_UNKNOWN)) {
+		if (batt_temp >= pdata->warm_temp_c)
+			/* Normal to Warm */
+			temp_state = POWER_SUPPLY_HEALTH_WARM;
+		else if (batt_temp <= pdata->cool_temp_c)
+			/* Normal to Cool */
+			temp_state = POWER_SUPPLY_HEALTH_COOL;
+		else
+			/* Stay Normal */
+			temp_state = POWER_SUPPLY_HEALTH_GOOD;
+	} else if (chip->temp_state == POWER_SUPPLY_HEALTH_COOL) {
+		if (batt_temp >=
+		    pdata->cool_temp_c + HYSTERISIS_DEGC)
+			/* Cool to Normal */
+			temp_state = POWER_SUPPLY_HEALTH_GOOD;
+		else if (batt_temp <= pdata->cold_temp_c)
+			/* Cool to Cold */
+			temp_state = POWER_SUPPLY_HEALTH_COLD;
+		else
+			/* Stay Cool */
+			temp_state = POWER_SUPPLY_HEALTH_COOL;
+	} else if (chip->temp_state == POWER_SUPPLY_HEALTH_COLD) {
+		if (batt_temp >=
+		    pdata->cold_temp_c + HYSTERISIS_DEGC)
+			/* Cold to Cool */
+			temp_state = POWER_SUPPLY_HEALTH_COOL;
+		else
+			/* Stay Cold */
+			temp_state = POWER_SUPPLY_HEALTH_COLD;
+	} else if (chip->temp_state == POWER_SUPPLY_HEALTH_OVERHEAT) {
+		if (batt_temp <=
+		    pdata->hot_temp_c - HYSTERISIS_DEGC)
+			/* Hot to Warm */
+			temp_state = POWER_SUPPLY_HEALTH_WARM;
+		else
+			/* Stay Hot */
+			temp_state = POWER_SUPPLY_HEALTH_OVERHEAT;
+	}
+
+	if (chip->temp_state != temp_state) {
+		chip->temp_state = temp_state;
+		if (chip->temp_state == POWER_SUPPLY_HEALTH_WARM) {
+			max_t = pdata->hot_temp_c;
+			min_t = pdata->warm_temp_c - HYSTERISIS_DEGC;
+		} else if (chip->temp_state == POWER_SUPPLY_HEALTH_GOOD) {
+			max_t = pdata->warm_temp_c;
+			min_t = pdata->cool_temp_c;
+		} else if (chip->temp_state == POWER_SUPPLY_HEALTH_COOL) {
+			max_t = pdata->cool_temp_c + HYSTERISIS_DEGC;
+			min_t = pdata->cold_temp_c;
+		} else if (chip->temp_state == POWER_SUPPLY_HEALTH_COLD) {
+			max_t = pdata->cold_temp_c + HYSTERISIS_DEGC;
+			min_t = pdata->cold_temp_c * 2;
+		} else if (chip->temp_state == POWER_SUPPLY_HEALTH_OVERHEAT) {
+			max_t = pdata->hot_temp_c * 2;
+			min_t = pdata->hot_temp_c - HYSTERISIS_DEGC;
+		}
+
+		max17042_set_temp_threshold(chip, max_t, min_t);
+
+		pr_warn("Battery Temp State = %d\n", chip->temp_state);
+
+		if (!chip->batt_psy && chip->pdata->batt_psy_name) {
+			batt_psy_name = chip->pdata->batt_psy_name;
+			chip->batt_psy =
+				power_supply_get_by_name((char *)batt_psy_name);
+		}
+
+		if (chip->batt_psy) {
+			ps.intval = chip->temp_state;
+			chip->batt_psy->set_property(chip->batt_psy,
+					     POWER_SUPPLY_PROP_HEALTH, &ps);
+		}
+
+		power_supply_changed(&chip->battery);
+		ret = 1;
+	}
+	mutex_unlock(&chip->check_temp_lock);
+
+	return ret;
+}
+
+#define ZERO_PERC_SOC_THRESHOLD 0x0100
+>>>>>>> 4cbe44b... O3 - thanks to sultanqasim
 static void max17042_set_soc_threshold(struct max17042_chip *chip, u16 off)
 {
 	u16 soc, soc_tr;

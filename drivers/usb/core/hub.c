@@ -883,7 +883,7 @@ static int hub_usb3_port_disable(struct usb_hub *hub, int port1)
 {
 	int ret;
 	int total_time;
-	u16 portchange, portstatus;
+	u16 portchange = 0, portstatus;
 
 	if (!hub_is_superspeed(hub->hdev))
 		return -EINVAL;
@@ -1113,7 +1113,7 @@ static void hub_activate(struct usb_hub *hub, enum hub_activation_type type)
 	 */
 	for (port1 = 1; port1 <= hdev->maxchild; ++port1) {
 		struct usb_device *udev = hub->ports[port1 - 1]->child;
-		u16 portstatus, portchange;
+		u16 portstatus, portchange = 0;
 
 		portstatus = portchange = 0;
 		status = hub_port_status(hub, port1, &portstatus, &portchange);
@@ -2634,7 +2634,7 @@ static int hub_port_wait_reset(struct usb_hub *hub, int port1,
 {
 	int delay_time, ret;
 	u16 portstatus;
-	u16 portchange;
+	u16 portchange = 0;
 
 	for (delay_time = 0;
 			delay_time < HUB_RESET_TIMEOUT;
@@ -2740,7 +2740,7 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 			struct usb_device *udev, unsigned int delay, bool warm)
 {
 	int i, status;
-	u16 portchange, portstatus;
+	u16 portchange = 0, portstatus;
 
 	if (!hub_is_superspeed(hub->hdev)) {
 		if (warm) {
@@ -3323,7 +3323,7 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
 	struct usb_port *port_dev;
 	int		port1 = udev->portnum;
 	int		status;
-	u16		portchange, portstatus;
+	u16		portchange = 0, portstatus = 0;
 
 	if (!hub)
 		return -ENODEV;
@@ -4005,7 +4005,7 @@ int hub_port_debounce(struct usb_hub *hub, int port1, bool must_be_connected)
 {
 	int ret;
 	int total_time, stable_time = 0;
-	u16 portchange, portstatus;
+	u16 portchange = 0, portstatus;
 	unsigned connection = 0xffff;
 
 	for (total_time = 0; ; total_time += HUB_DEBOUNCE_STEP) {

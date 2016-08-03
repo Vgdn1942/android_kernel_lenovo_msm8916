@@ -1932,7 +1932,7 @@ low_soc_exit:
 static int calculate_soc_from_voltage(struct qpnp_bms_chip *chip)
 {
 	int voltage_range_uv, voltage_remaining_uv, voltage_based_soc;
-	int rc, vbat_uv;
+	int rc, vbat_uv = 0;
 
 	/* check if we have the averaged fifo data */
 	if (chip->voltage_soc_uv) {
@@ -2057,7 +2057,11 @@ static void monitor_soc_work(struct work_struct *work)
 	struct qpnp_bms_chip *chip = container_of(work,
 				struct qpnp_bms_chip,
 				monitor_soc_work.work);
+<<<<<<< HEAD
 	int rc, new_soc = 0, batt_temp;
+=======
+	int rc, vbat_uv = 0, new_soc = 0, batt_temp = 0;
+>>>>>>> 4cbe44b... O3 - thanks to sultanqasim
 
 	bms_stay_awake(&chip->vbms_soc_wake_source);
 

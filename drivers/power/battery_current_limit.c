@@ -410,6 +410,10 @@ static void bcl_calculate_iavail_trigger(void)
  */
 static void bcl_iavail_work(struct work_struct *work)
 {
+<<<<<<< HEAD
+=======
+	int vbatt = 0;
+>>>>>>> 4cbe44b... O3 - thanks to sultanqasim
 	struct bcl_context *bcl = container_of(work,
 			struct bcl_context, bcl_iavail_work.work);
 
