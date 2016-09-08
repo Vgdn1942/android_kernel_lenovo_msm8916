@@ -72,7 +72,11 @@ int32_t msm_camera_cci_i2c_read_seq(struct msm_camera_i2c_client *client,
 		return rc;
 
 	if (num_byte > I2C_REG_DATA_MAX) {
+<<<<<<< HEAD
 		pr_err("%s: Error num_byte:0x%x exceeds 8K max supported:0x%x\n",
+=======
+			pr_err("%s: Error num_byte:0x%x exceeds 8K max supported:0x%x\n",
+>>>>>>> a4fbc11... msm: camera: Restructure data handling to be more robust
 			__func__, num_byte, I2C_REG_DATA_MAX);
 		return rc;
 	}
