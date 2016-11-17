@@ -42,6 +42,13 @@
 #define FT_SUSPEND_LEVEL 1
 #endif
 
+#ifdef CONFIG_FTS_GESTURE
+#include <linux/timer.h>
+#define FT_GESTURE_DOUBLECLICK		0x24
+#define FT_GESTURE_OUTPUT_ADRESS	0xD3
+#define FT_GESTRUE_POINTS_HEADER	8
+#endif
+
 #define FT_DRIVER_VERSION	0x02
 
 #define FT_META_REGS		3
@@ -288,6 +295,14 @@ static struct sensors_classdev __maybe_unused sensors_proximity_cdev = {
 	.sensors_enable = NULL,
 	.sensors_poll_delay = NULL,
 };
+
+#ifdef CONFIG_FTS_GESTURE
+#define FTS_GESTURE_PROC_FILE "gesture_open"
+static struct proc_dir_entry *gesture_proc = NULL;
+static struct timer_list ft5x06_gesture_timer;
+static char ft5x06_gesture_state;
+static char ft5x06_gesture_open=0;
+#endif
 
 static inline bool ft5x06_psensor_support_enabled(void)
 {
@@ -684,6 +699,50 @@ static void ft5x06_update_fw_ver(struct ft5x06_ts_data *data)
 		data->fw_ver[0], data->fw_ver[1], data->fw_ver[2]);
 }
 
+#ifdef CONFIG_FTS_GESTURE
+extern void qpnp_kernel_vib_enable(int value);
+extern int stk_ps_enable_for_double_tap(void);
+
+static void ft5x06_gesture_change_state(unsigned long lparam)
+{
+	ft5x06_gesture_state=0;
+}
+void ft5x06_gesture_init_temer(void)
+{
+	init_timer(&ft5x06_gesture_timer);
+	ft5x06_gesture_timer.expires = jiffies + HZ/2;
+	ft5x06_gesture_timer.function = ft5x06_gesture_change_state;
+	add_timer(&ft5x06_gesture_timer);
+	ft5x06_gesture_state=1;
+}
+static void ft5x06_read_gesture_data(struct ft5x06_ts_data *data)
+{
+	int ret;
+	u8 *buf = data->tch_data;
+
+	if(ft5x06_gesture_state == 1)
+		return;
+	if(stk_ps_enable_for_double_tap())
+		return;
+	buf[0] = FT_GESTURE_OUTPUT_ADRESS;
+	ret = ft5x06_i2c_read(data->client, buf, 1, buf, FT_GESTRUE_POINTS_HEADER);
+	if (ret < 0)
+	{
+		return;
+	}
+
+	if(FT_GESTURE_DOUBLECLICK == buf[0])
+	{
+		input_event(data->input_dev,EV_KEY,116,1);
+		input_event(data->input_dev,EV_KEY,116,0);
+		input_sync(data->input_dev);
+		qpnp_kernel_vib_enable(50);
+		printk(KERN_ERR "%s %d gesture report power key OK\n",__func__,__LINE__);
+	}
+	ft5x06_gesture_init_temer();
+}
+#endif
+
 static irqreturn_t ft5x06_ts_interrupt(int irq, void *dev_id)
 {
 	struct ft5x06_ts_data *data = dev_id;
@@ -700,6 +759,19 @@ static irqreturn_t ft5x06_ts_interrupt(int irq, void *dev_id)
 
 	ip_dev = data->input_dev;
 	buf = data->tch_data;
+
+
+#ifdef CONFIG_FTS_GESTURE
+	if(1 == ft5x06_gesture_open)
+	{
+		ft5x0x_read_reg(data->client, 0xd0, buf);
+		if(1 == buf[0])
+		{
+			ft5x06_read_gesture_data(data);
+			return IRQ_HANDLED;
+		}
+	}
+#endif
 
 	if (ft5x06_psensor_support_enabled() && data->pdata->psensor_support &&
 		data->psensor_pdata->tp_psensor_opened) {
@@ -1171,6 +1243,12 @@ static int ft5x06_ts_suspend(struct device *dev)
 	struct ft5x06_ts_data *data = dev_get_drvdata(dev);
 	int err;
 
+
+#ifdef CONFIG_FTS_GESTURE
+	if(ft5x06_gesture_open_export() == 1)
+		return 0;
+#endif
+
 	if (data->loading_fw) {
 		dev_info(dev, "Firmware loading in process...\n");
 		return 0;
@@ -1213,6 +1291,14 @@ static int ft5x06_ts_resume(struct device *dev)
 {
 	struct ft5x06_ts_data *data = dev_get_drvdata(dev);
 	int err;
+
+#ifdef CONFIG_FTS_GESTURE
+	if(ft5x06_gesture_close_export()==1) {
+		if (usb_online)
+			ft5x0x_write_reg(data->client,FT_REG_FREQ_HOP,0x01);
+		return 0;
+	}
+#endif
 
 	if (!data->suspended) {
 		dev_dbg(dev, "Already in awake state\n");
@@ -1740,6 +1826,53 @@ static ssize_t ft5x06_fw_name_store(struct device *dev,
 }
 
 static DEVICE_ATTR(fw_name, 0664, ft5x06_fw_name_show, ft5x06_fw_name_store);
+#ifdef CONFIG_FTS_GESTURE
+int ft5x06_gesture_open_export(void)
+{
+	struct ft5x06_ts_data *data=NULL;
+	char i;
+	if(ft5x06_dev == NULL)
+		return 0;
+	data = dev_get_drvdata(ft5x06_dev);
+	if(data==NULL)
+		return 0;
+	if(ft5x06_gesture_open == 0)
+		return 0;
+	ft5x0x_write_reg(data->client,0xd0,0x01);//let fw open gestrue function
+	ft5x0x_write_reg(data->client,0xd1,0x3f);//let fw open gestrue function
+	ft5x0x_write_reg(data->client,0xd2,0x3f);//let fw open gestrue function
+	ft5x0x_write_reg(data->client,0xd3,0x00);//let fw open gestrue function
+	data->suspended = true;
+	/* release all touches */
+	for (i = 0; i < data->pdata->num_max_touches; i++) {
+		input_mt_slot(data->input_dev, i);
+		input_mt_report_slot_state(data->input_dev, MT_TOOL_FINGER, 0);
+	}
+	input_mt_report_pointer_emulation(data->input_dev, false);
+	input_sync(data->input_dev);
+	printk(KERN_ERR "liyatang gesture open\n");
+	return 1;
+}
+EXPORT_SYMBOL(ft5x06_gesture_open_export);
+int ft5x06_gesture_close_export(void)
+{
+	struct ft5x06_ts_data *data=NULL;
+	if(ft5x06_dev == NULL)
+		return 0;
+	data = dev_get_drvdata(ft5x06_dev);
+	if(data==NULL)
+		return 0;
+	if(ft5x06_gesture_open == 0)
+		return 0;
+	ft5x0x_write_reg(data->client,0xd0,0x00);//let fw close gestrue function
+	ft5x0x_write_reg(data->client,0xd1,0x00);//let fw close gestrue function
+	ft5x0x_write_reg(data->client,0xd2,0x00);//let fw close gestrue function
+	printk(KERN_ERR "liyatang gesture close\n");
+	data->suspended = false;
+	return 1;
+}
+EXPORT_SYMBOL(ft5x06_gesture_close_export);
+#endif
 
 static bool ft5x06_debug_addr_is_valid(int addr)
 {
@@ -2081,6 +2214,49 @@ static int ft5x06_parse_dt(struct device *dev,
 }
 #endif
 
+#ifdef CONFIG_FTS_GESTURE
+static ssize_t fts_gesture_proc_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+{
+	int cnt= 0;
+    char *page = NULL;
+	page = kzalloc(FT_FW_NAME_MAX_LEN, GFP_KERNEL);
+	if(ft5x06_gesture_open)
+		cnt = sprintf(page,  "FT5x06 gesture open\n");
+	else
+		cnt = sprintf(page,  "FT5x06 gesture close\n");
+	cnt = simple_read_from_buffer(buf, size, ppos, page, cnt);
+	kfree(page);
+	return cnt;
+}
+
+static ssize_t fts_gesture_proc_write(struct file *file, const char __user *buf, size_t size, loff_t *ppos)
+{
+	char i;
+	struct ft5x06_ts_data *data = dev_get_drvdata(ft5x06_dev);
+	if(copy_from_user(&i,buf,1))
+	{
+        return -EFAULT;
+	}
+
+    if (i == '3')  ft5x06_gesture_open = 1;
+
+	if (data->suspended == false) {
+		if (i == '1')
+			ft5x06_gesture_open = 1;
+		else if(i == '0')
+			ft5x06_gesture_open = 0;
+		else if(i=='2')
+			ft5x06_gesture_open_export();
+	}
+	printk(KERN_ERR "%s %d ft5x06_gesture_open = %d,i=%d\n",__func__,__LINE__,ft5x06_gesture_open,i);
+	return size;
+}
+static const struct file_operations fts_gesture_proc_fops= {
+	.read		= fts_gesture_proc_read,
+	.write		= fts_gesture_proc_write,
+};
+#endif
+
 static int ft5x06_ts_probe(struct i2c_client *client,
 			   const struct i2c_device_id *id)
 {
@@ -2166,6 +2342,9 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 	__set_bit(EV_KEY, input_dev->evbit);
 	__set_bit(EV_ABS, input_dev->evbit);
 	__set_bit(BTN_TOUCH, input_dev->keybit);
+#ifdef CONFIG_FTS_GESTURE
+	__set_bit(116, input_dev->keybit);
+#endif
 	__set_bit(INPUT_PROP_DIRECT, input_dev->propbit);
 
 	input_mt_init_slots(input_dev, pdata->num_max_touches, 0);
@@ -2357,6 +2536,13 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 			goto free_enable_sys;
 		}
 	}
+
+#ifdef CONFIG_FTS_GESTURE
+	enable_irq_wake(client->irq);
+	gesture_proc = proc_create_data(FTS_GESTURE_PROC_FILE, 0666, NULL, &fts_gesture_proc_fops, NULL);
+	if (IS_ERR_OR_NULL(gesture_proc))
+		printk("create_proc_entry gesture_proc failed\n");
+#endif
 
 	err = device_create_file(&client->dev, &dev_attr_fw_name);
 	if (err) {
