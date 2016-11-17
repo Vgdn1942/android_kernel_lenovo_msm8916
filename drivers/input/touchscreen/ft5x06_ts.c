@@ -44,6 +44,10 @@
 
 #ifdef CONFIG_FTS_GESTURE
 #include <linux/timer.h>
+#include <linux/fs.h>
+#include <linux/unistd.h>
+#include <linux/uaccess.h>
+#include <linux/proc_fs.h>
 #define FT_GESTURE_DOUBLECLICK		0x24
 #define FT_GESTURE_OUTPUT_ADRESS	0xD3
 #define FT_GESTRUE_POINTS_HEADER	8
