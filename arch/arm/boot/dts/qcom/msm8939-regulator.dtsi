@@ -84,8 +84,8 @@
 		regulator-max-microvolt = <28>;
 
 		qcom,cpr-fuse-corners = <3>;
-		qcom,cpr-voltage-ceiling = <1030000 1150000 1355000>;
-		qcom,cpr-voltage-floor = <1030000 1050000 1137500>;
+		qcom,cpr-voltage-ceiling = <1040000 1150000 1355000>;
+		qcom,cpr-voltage-floor = <1040000 1050000 1137500>;
 		vdd-apc-supply = <&ncp6335d>;
 		vdd-apc-optional-prim-supply = <&ncp6335d>;
 		vdd-apc-optional-sec-supply = <&fan53555>;
@@ -115,7 +115,7 @@
 		qcom,cpr-fuse-target-quot = <42 24 6>;
 		qcom,cpr-fuse-ro-sel = <54 54 54>;
 		qcom,cpr-quot-min-diff = <0>;
-		qcom,cpr-init-voltage-ref = <1030000 1150000 1355000>;
+		qcom,cpr-init-voltage-ref = <1045000 1150000 1355000>;
 		qcom,cpr-fuse-init-voltage =
 					<27 36 6 0>,
 					<27 18 6 0>,
@@ -215,7 +215,7 @@
 					<0  104   (-41)>, /* NOM + 50mv, TURBO - 20mv	*/
 					<0   41   (-41)>, /* NOM + 20mv, TURBO - 20mv	*/
 					<0   41  (-124)>, /* NOM + 20mv, TURBO - 60mv	*/
-					<0 (-41) (-104)>, /* NOM - 20mv, TURBO - 50mv	*/
+					<0 (-41)    52>,  /* NOM - 20mv, TURBO + 25mv	*/
 					<0  104  (-124)>, /* NOM + 50mv, TURBO - 60mv	*/
 					<0   41  (-124)>, /* NOM + 20mv, TURBO - 60mv	*/
 					<0  104   (-41)>, /* NOM + 50mv, TURBO - 20mv	*/
@@ -294,8 +294,8 @@
 			<0xffffffff 0xffffffff 1030000 1030000 1030000 1030000
 			1030000 1030000 1030000 1030000 1030000 1030000 1030000
 			1050000 1050000 1075000 1095000 1125000 1125500 1128500
-			1137500 1137500 1137500 1137500 1137500 1137500 1200000
-			1207500 1257500 1345000>;
+			1137500 1137500 1137500 1237500 1237500 1237500 1300000
+			1307500 1327500 1345000>;
 		qcom,cpr-enable;
 	};
 };
