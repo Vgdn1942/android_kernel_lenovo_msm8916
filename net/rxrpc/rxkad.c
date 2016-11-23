@@ -692,7 +692,7 @@ static void rxkad_calc_response_checksum(struct rxkad_response *response)
  * load a scatterlist with a potentially split-page buffer
  */
 static void rxkad_sg_set_buf2(struct scatterlist sg[2],
-			      void *buf, size_t buflen)
+			      void *buf, siza_t buflen)
 {
 	int nsg = 1;
 
