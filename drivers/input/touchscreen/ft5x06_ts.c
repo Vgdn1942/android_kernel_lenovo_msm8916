@@ -247,7 +247,7 @@ struct ft5x06_ts_data {
 	struct pinctrl_state *pinctrl_state_active;
 	struct pinctrl_state *pinctrl_state_suspend;
 	struct pinctrl_state *pinctrl_state_release;
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 	u8 gesture_id;
 	u8 gesture_set;
 #endif
@@ -267,7 +267,11 @@ static char ft5x06_gesture_state;
 static char ft5x06_gesture_open=0;
 #endif
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
+static int wake_up_enable_counter = 0;
+
+static int ft5x06_i2c_read(struct i2c_client *client, char *writebuf,
+			int writelen, char *readbuf, int readlen);
 
 /* [PLATFORM]-Mod-BEGIN by TCTNB.YQJ, FR797197, 2014/11/28 modify for 5x36 tp register of gesture  */
 #define FT5X06_REG_GESTURE_SET    0xd0
@@ -425,7 +429,6 @@ static ssize_t tp_reg_dump_show(struct device *dev,
     // ret = snprintf(buf, 100, "FocalTech TP (0xA8) is 0x%x, fw_version (0xA6) is 0x%x.\n", reg_data, data->fw_ver[0]);
 	return (s - buf);
 }
-
 
 static ssize_t tp_kreg_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -651,7 +654,7 @@ static void ft5x06_read_gesture_data(struct ft5x06_ts_data *data)
 }
 #endif
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 static int ft_tp_interrupt(struct ft5x06_ts_data *data)
 {
 	int rc = 0;
@@ -705,7 +708,7 @@ static irqreturn_t ft5x06_ts_interrupt(int irq, void *dev_id)
 		return IRQ_HANDLED;
 	}
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 	if( (data->gesture_id > 0) && (0x01 == data->gesture_set) ) {
 		ft_tp_interrupt(data);
 		return IRQ_HANDLED;
@@ -996,7 +999,7 @@ static int ft5x06_ts_pinctrl_select(struct ft5x06_ts_data *ft5x06_data,
 	return 0;
 }
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 static int ft_tp_suspend(struct ft5x06_ts_data *data)
 {
 	char txbuf[2];
@@ -1084,7 +1087,7 @@ static int ft5x06_ts_suspend(struct device *dev)
 	input_mt_report_pointer_emulation(data->input_dev, false);
 	input_sync(data->input_dev);
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 	if ( data->gesture_id > 0) {
 		enable_irq(data->client->irq);
 		ft_tp_suspend(data);
@@ -1146,7 +1149,7 @@ static int ft5x06_ts_resume(struct device *dev)
 		return 0;
 	}
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 	if ( data->gesture_id > 0) {
 		ft_tp_resume(data);
 //wxc [begin] add reset during gesture_awake 12/22/2015
@@ -2128,7 +2131,7 @@ static int ft5x06_parse_dt(struct device *dev,
 }
 #endif
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 void keyset_for_tp_gesture(struct input_dev *input_dev)
 {
 	input_set_capability(input_dev, EV_KEY, KEY_POWER);
@@ -2298,7 +2301,7 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, pdata->y_min,
 			     pdata->y_max, 0, 0);
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 	keyset_for_tp_gesture(input_dev);
 #endif
 
@@ -2533,7 +2536,7 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 	ft5x06_fw_upgrade(ft5x06_dev, false);
 #endif
 
-#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+#if defined(FOCALTECH_TP_GESTURE)
 	tp_gestures_register(data);
 #endif
 

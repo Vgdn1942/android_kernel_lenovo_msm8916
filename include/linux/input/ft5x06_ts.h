@@ -24,6 +24,8 @@
 #define FT6X06_ID		0x06
 #define FT6X36_ID       0x36
 
+#define FOCALTECH_TP_GESTURE
+
 struct fw_upgrade_info {
 	bool auto_cal;
 	u16 delay_aa;
