@@ -84,6 +84,7 @@ obj-$(CONFIG_TOUCHSCREEN_GT9XX)		+= gt9xx/
 obj-$(CONFIG_TOUCHSCREEN_BU21150)	+= bu21150.o
 obj-$(CONFIG_INPUT_MT_WRAPPER)		+= input_mt_wrapper.o
 obj-$(CONFIG_TOUCHSCREEN_IT7260_I2C)    += it7258_ts_i2c.o
+obj-$(CONFIG_TOUCHSCREEN_FT5X36_IDOL3)	+= ft5x36_idol3/
 
 obj-y	+= lct_tp_fm_info.o
 obj-y	+= lct_ctp_selftest.o
