@@ -247,6 +247,10 @@ struct ft5x06_ts_data {
 	struct pinctrl_state *pinctrl_state_active;
 	struct pinctrl_state *pinctrl_state_suspend;
 	struct pinctrl_state *pinctrl_state_release;
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+	u8 gesture_id;
+	u8 gesture_set;
+#endif
 };
 
 struct device *ft5x06_dev=NULL;
@@ -261,6 +265,239 @@ static struct proc_dir_entry *gesture_proc = NULL;
 static struct timer_list ft5x06_gesture_timer;
 static char ft5x06_gesture_state;
 static char ft5x06_gesture_open=0;
+#endif
+
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+
+/* [PLATFORM]-Mod-BEGIN by TCTNB.YQJ, FR797197, 2014/11/28 modify for 5x36 tp register of gesture  */
+#define FT5X06_REG_GESTURE_SET    0xd0
+#define FT5X06_REG_GESTURE_STATE    0xd3
+#define  GESTURE_V 0x14
+#define  GESTURE_DB 0x24
+#define  GESTURE_C 0x18
+/* [PLATFORM]-Mod-END by TCTNB.YQJ */
+static int ft_tp_suspend(struct ft5x06_ts_data *data);
+
+static struct class * tp_gesture_class;
+static struct device * tp_gesture_dev;
+
+/*
+	u8 gesture_id; 0: close gesture function,
+	> 0: gesture_ids. 1: for unlock, 2: for power.
+*/
+static ssize_t tp_gesture_id_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct ft5x06_ts_data *data = NULL;
+       int ret;
+
+	data = dev_get_drvdata(dev);
+       ret = snprintf(buf, 50, "%d\n", data->gesture_id);
+
+       return ret;
+}
+
+static ssize_t tp_gesture_id_store(struct device *dev,
+				struct device_attribute *attr,
+				const char *buf, size_t size)
+{
+	struct ft5x06_ts_data *data = NULL;
+	unsigned long val = 0;
+	ssize_t ret = -EINVAL;
+
+	data = dev_get_drvdata(dev);
+
+	if (data->suspended)
+		return ret;
+
+	ret = kstrtoul(buf, 10, &val);
+	if (ret)
+		return ret;
+
+
+	if ( 0 == val )
+	{
+		data->gesture_id = 0x00;
+		device_init_wakeup(&data->client->dev, 0);
+	} else
+	if ( val > 0 )
+	{
+		data->gesture_id = val;
+		device_init_wakeup(&data->client->dev, 1);
+	} else {
+		pr_err("invalid  command! \n");
+		return -1;
+	}
+	printk("gesture_id = %d \n", data->gesture_id);
+
+	return size;
+}
+
+static ssize_t tp_fw_version_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct ft5x06_ts_data *data = NULL;
+	struct i2c_client *client = NULL;
+       int ret;
+
+	u8 reg_addr, reg_data;
+	int err;
+
+	data = dev_get_drvdata(dev);
+	client = data->client;
+
+	reg_addr = 0xA8;
+	err = ft5x06_i2c_read(client, &reg_addr, 1, &reg_data, 1);
+	if (err < 0)
+		dev_err(&client->dev, "reg_data");
+
+       ret = snprintf(buf, 100, "FocalTech TP (0xA8) is 0x%x, fw_version (0xA6) is 0x%x.\n", reg_data, data->fw_ver[0]);
+
+       return ret;
+}
+
+static ssize_t tp_reg_dump_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct ft5x06_ts_data *data = NULL;
+    int ret;
+	u8 reg = 0x00, *reg_buf;
+	//int err;
+	char *s = buf;
+
+	data = dev_get_drvdata(dev);
+	reg_buf = data->tch_data;
+	reg = 0x00;
+	ret = ft5x06_i2c_read(data->client, &reg, 1,
+			reg_buf, 15);
+	if (ret < 0) {
+		dev_err(&data->client->dev, "%s: read data fail\n", __func__);
+	}
+
+	s += sprintf(s, "reg[0]: reg[0] = 0x%x\n", reg_buf[0]);
+	printk("reg[0]: reg[0] = 0x%x\n", reg_buf[0]);
+
+	s += sprintf(s, "reg[1]: reg[1] = 0x%x\n", reg_buf[1]);
+	printk("reg[1]: reg[1] = 0x%x\n", reg_buf[1]);
+
+	s += sprintf(s, "reg[2]: reg[2] = 0x%x\n", reg_buf[2]);
+	printk("reg[0]: reg[2] = 0x%x\n", reg_buf[2]);
+
+	s += sprintf(s, "reg[3]: reg[3] = 0x%x\n", reg_buf[3]);
+	printk("reg[3]: reg[3] = 0x%x\n", reg_buf[3]);
+
+	s += sprintf(s, "reg[4]: reg[4] = 0x%x\n", reg_buf[4]);
+	printk("reg[4]: reg[4] = 0x%x\n", reg_buf[4]);
+
+	s += sprintf(s, "reg[5]: reg[5] = 0x%x\n", reg_buf[5]);
+	printk("reg[5]: reg[5] = 0x%x\n", reg_buf[5]);
+
+	s += sprintf(s, "reg[6]: reg[6] = 0x%x\n", reg_buf[6]);
+	printk("reg[6]: reg[6] = 0x%x\n", reg_buf[6]);
+
+	s += sprintf(s, "reg[7]: reg[7] = 0x%x\n", reg_buf[7]);
+	printk("reg[7]: reg[7] = 0x%x\n", reg_buf[7]);
+
+	s += sprintf(s, "reg[8]: reg[8] = 0x%x\n", reg_buf[8]);
+	printk("reg[8]: reg[8] = 0x%x\n", reg_buf[8]);
+
+	s += sprintf(s, "reg[9]: reg[9] = 0x%x\n", reg_buf[9]);
+	printk("reg[9]: reg[9] = 0x%x\n", reg_buf[9]);
+
+	s += sprintf(s, "reg[10]: reg[10] = 0x%x\n", reg_buf[10]);
+	printk("reg[10]: reg[10] = 0x%x\n", reg_buf[10]);
+
+	s += sprintf(s, "reg[11]: reg[11] = 0x%x\n", reg_buf[11]);
+	printk("reg[11]: reg[11] = 0x%x\n", reg_buf[11]);
+
+	s += sprintf(s, "reg[12]: reg[12] = 0x%x\n", reg_buf[12]);
+	printk("reg[12]: reg[12] = 0x%x\n", reg_buf[12]);
+
+	s += sprintf(s, "reg[13]: reg[13] = 0x%x\n", reg_buf[13]);
+	printk("reg[13]: reg[13] = 0x%x\n", reg_buf[13]);
+
+	s += sprintf(s, "reg[14]: reg[14] = 0x%x\n", reg_buf[14]);
+	printk("reg[14]: reg[14] = 0x%x\n", reg_buf[14]);
+
+	s += sprintf(s, "reg[15]: reg[15] = 0x%x\n", reg_buf[15]);
+	printk("reg[15]: reg[15] = 0x%x\n", reg_buf[15]);
+
+    // ret = snprintf(buf, 100, "FocalTech TP (0xA8) is 0x%x, fw_version (0xA6) is 0x%x.\n", reg_data, data->fw_ver[0]);
+	return (s - buf);
+}
+
+
+static ssize_t tp_kreg_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct ft5x06_ts_data *data = NULL;
+	struct i2c_client *client = NULL;
+       int ret;
+
+	u8 reg_addr, reg_data0, reg_data1;
+	int err;
+
+	data = dev_get_drvdata(dev);
+	client = data->client;
+
+	reg_data0 = 0;
+	reg_data1 = 0;
+
+	reg_addr = 0x96;
+	err = ft5x06_i2c_read(client, &reg_addr, 1, &reg_data0, 1);
+	if (err < 0)
+		dev_err(&client->dev, "reg_data0");
+
+	reg_addr = 0xB0;
+	err = ft5x06_i2c_read(client, &reg_addr, 1, &reg_data1, 1);
+	if (err < 0)
+		dev_err(&client->dev, "reg_data1");
+
+       ret = snprintf(buf, 100, "FocalTech (0x96) is 0x%x, fw_version (0xB0) is 0x%x.\n", reg_data0, reg_data1);
+
+       return ret;
+}
+
+static DEVICE_ATTR(tp_gesture_id, 0644, tp_gesture_id_show, tp_gesture_id_store);
+
+static DEVICE_ATTR(tp_fw_version, 0444, tp_fw_version_show, NULL);
+
+static DEVICE_ATTR(tp_reg_dump, 0444, tp_reg_dump_show, NULL);
+
+static DEVICE_ATTR(tp_kreg_val, 0444, tp_kreg_show, NULL);
+
+void tp_gestures_register ( struct ft5x06_ts_data *data)
+{
+	int rc = 0;
+	tp_gesture_class = class_create(THIS_MODULE, "tp_gesture");
+	if (IS_ERR(tp_gesture_class))
+		pr_err("Failed to create class(tp_gesture_class)!\n");
+
+	tp_gesture_dev = device_create(tp_gesture_class, NULL, 0, NULL, "tp_device");
+	if (IS_ERR(tp_gesture_dev))
+		pr_err("Failed to create device(lcd_ce_ctrl)!\n");
+
+	// tp_gesture
+	rc = device_create_file(tp_gesture_dev, &dev_attr_tp_gesture_id);
+	if ( rc < 0)
+		pr_err("Failed to create device file(%s)!\n", dev_attr_tp_gesture_id.attr.name);
+
+	rc = device_create_file(tp_gesture_dev, &dev_attr_tp_fw_version);
+	if ( rc < 0)
+		pr_err("Failed to create device file(%s)!\n", dev_attr_tp_fw_version.attr.name);
+
+	rc = device_create_file(tp_gesture_dev, &dev_attr_tp_reg_dump);
+	if ( rc < 0)
+		pr_err("Failed to create device file(%s)!\n", dev_attr_tp_reg_dump.attr.name);
+
+	rc = device_create_file(tp_gesture_dev, &dev_attr_tp_kreg_val);
+	if ( rc < 0)
+		pr_err("Failed to create device file(%s)!\n", dev_attr_tp_kreg_val.attr.name);
+
+	dev_set_drvdata(tp_gesture_dev, data);
+//	dev_set_drvdata(lcd_ce_dev, NULL);
+
+}
 #endif
 
 static int ft5x06_i2c_read(struct i2c_client *client, char *writebuf,
@@ -414,6 +651,46 @@ static void ft5x06_read_gesture_data(struct ft5x06_ts_data *data)
 }
 #endif
 
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+static int ft_tp_interrupt(struct ft5x06_ts_data *data)
+{
+	int rc = 0;
+	u8 reg_value, reg = 0x00;
+	if( (data->gesture_id > 0) && (0x01 == data->gesture_set) )
+	{
+		reg = FT5X06_REG_GESTURE_STATE;
+		rc = ft5x06_i2c_read(data->client, &reg, 1, &reg_value, 1);
+		if (rc < 0) {
+			dev_err(&data->client->dev, "%s: read data fail\n", __func__);
+			return rc;
+		}
+
+		if(GESTURE_DB == reg_value)
+		{
+			if ( 0x01 == data->gesture_id) {
+				input_report_key(data->input_dev, KEY_POWER, 1);
+				input_sync(data->input_dev);
+				input_report_key(data->input_dev, KEY_POWER, 0);
+				input_sync(data->input_dev);
+			} else
+			if ( 0x02 == data->gesture_id) {
+				input_report_key(data->input_dev, KEY_POWER, 1);
+				input_sync(data->input_dev);
+				input_report_key(data->input_dev, KEY_POWER, 0);
+				input_sync(data->input_dev);
+			}
+		} else {
+			printk("gesture_id, reg_value=0x%x \n", reg_value);
+		}
+
+		return rc;
+
+	}
+
+	return rc;
+}
+#endif
+
 static irqreturn_t ft5x06_ts_interrupt(int irq, void *dev_id)
 {
 	struct ft5x06_ts_data *data = dev_id;
@@ -427,6 +704,13 @@ static irqreturn_t ft5x06_ts_interrupt(int irq, void *dev_id)
 		pr_err("%s: Invalid data\n", __func__);
 		return IRQ_HANDLED;
 	}
+
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+	if( (data->gesture_id > 0) && (0x01 == data->gesture_set) ) {
+		ft_tp_interrupt(data);
+		return IRQ_HANDLED;
+	}
+#endif
 
 	ip_dev = data->input_dev;
 	buf = data->tch_data;
@@ -712,6 +996,54 @@ static int ft5x06_ts_pinctrl_select(struct ft5x06_ts_data *ft5x06_data,
 	return 0;
 }
 
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+static int ft_tp_suspend(struct ft5x06_ts_data *data)
+{
+	char txbuf[2];
+	int err = 0;
+	if ( data->gesture_id > 0)
+	{
+		txbuf[0] = 0xd1;
+		txbuf[1] = 0x10;// enable tp gesture
+		ft5x06_i2c_write(data->client, txbuf, sizeof(txbuf));
+		ft5x06_i2c_write(data->client, txbuf, sizeof(txbuf));
+		data->gesture_set = 0x01;
+
+		if (device_may_wakeup(&data->client->dev)&& (wake_up_enable_counter == 0))
+		{
+			err=enable_irq_wake(data->client->irq);
+			wake_up_enable_counter ++;
+		}
+		data->suspended = true;
+		return err;
+	}
+
+	return err;
+}
+
+static int ft_tp_resume(struct ft5x06_ts_data *data)
+{
+	char txbuf[2];
+	if ( data->gesture_id > 0)
+	{
+		txbuf[0] = FT5X06_REG_GESTURE_SET;
+		txbuf[1] = 0x00; //disable gesture
+		ft5x06_i2c_write(data->client, txbuf, sizeof(txbuf));
+		data->gesture_set = 0x00;//clean flag
+
+		if (device_may_wakeup(&data->client->dev) && (wake_up_enable_counter > 0))
+		{
+			disable_irq_wake(data->client->irq);
+			wake_up_enable_counter --;
+		}
+		data->suspended = false;
+		msleep(20); /*TCT-NB TIANHONGWEI add for less resume time   100 */
+		return 0 ;
+	}
+
+	return 0;
+}
+#endif
 
 #ifdef CONFIG_PM
 int ft5x06_gesture_open_export(void);
@@ -751,6 +1083,15 @@ static int ft5x06_ts_suspend(struct device *dev)
 	}
 	input_mt_report_pointer_emulation(data->input_dev, false);
 	input_sync(data->input_dev);
+
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+	if ( data->gesture_id > 0) {
+		enable_irq(data->client->irq);
+		ft_tp_suspend(data);
+
+		return 0;
+	}
+#endif
 
 	if (gpio_is_valid(data->pdata->reset_gpio)) {
 		txbuf[0] = FT_REG_PMODE;
@@ -804,6 +1145,21 @@ static int ft5x06_ts_resume(struct device *dev)
 		dev_dbg(dev, "Already in awake state\n");
 		return 0;
 	}
+
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+	if ( data->gesture_id > 0) {
+		ft_tp_resume(data);
+//wxc [begin] add reset during gesture_awake 12/22/2015
+
+		if (gpio_is_valid(data->pdata->reset_gpio)) {
+			gpio_set_value_cansleep(data->pdata->reset_gpio, 0);
+			msleep(data->pdata->hard_rst_dly);
+			gpio_set_value_cansleep(data->pdata->reset_gpio, 1);
+		}
+		msleep(data->pdata->soft_rst_dly);
+		return 0;
+	}
+#endif
 
 	if (data->pdata->power_on) {
 		err = data->pdata->power_on(true);
@@ -1772,6 +2128,13 @@ static int ft5x06_parse_dt(struct device *dev,
 }
 #endif
 
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+void keyset_for_tp_gesture(struct input_dev *input_dev)
+{
+	input_set_capability(input_dev, EV_KEY, KEY_POWER);
+}
+#endif
+
 void ft5x06_usbdetect_on(struct work_struct *w)
 {
 	struct ft5x06_ts_data *data = dev_get_drvdata(ft5x06_dev);
@@ -1934,6 +2297,10 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 			     pdata->x_max, 0, 0);
 	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, pdata->y_min,
 			     pdata->y_max, 0, 0);
+
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+	keyset_for_tp_gesture(input_dev);
+#endif
 
 	err = input_register_device(input_dev);
 	if (err) {
@@ -2164,6 +2531,10 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 
 #if FW_AUTO_UPGRADE
 	ft5x06_fw_upgrade(ft5x06_dev, false);
+#endif
+
+#if defined(CONFIG_FOCALTECH_TP_GESTURE)
+	tp_gestures_register(data);
 #endif
 
 	return 0;
