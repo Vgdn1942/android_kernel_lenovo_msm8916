@@ -1,1 +1,0 @@
-obj-$(CONFIG_TOUCHSCREEN_FT5X36_IDOL3) += ft5x06_ts.o
