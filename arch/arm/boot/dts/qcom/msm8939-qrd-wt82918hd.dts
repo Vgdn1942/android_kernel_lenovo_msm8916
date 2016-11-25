@@ -223,12 +223,12 @@
         chgen-gpio = <&msm_gpio 114 0x00>; // nCHGEN Pin: Temp GPIO NUMBER
         nshdn-gpio = <&msm_gpio 20 0x00>; // nSHDN Pin: Temp GPIO NUMBER    
         sm-irq-gpio = <&msm_gpio 62 0x0>;           
-        qcom,float-voltage-mv = <4400>;
+        qcom,float-voltage-mv = <4425>;
         qcom,iterm-ma = <100>;
         //qcom,recharge-mv = <50>;
         regulator-name = "sm5414_otg_vreg";
-        qcom,thermal-mitigation = <1500 1000 800 600>; //<1500 1000 800 0>;
-        qcom,fastchg-current-max-ma = <2000>;     
+        qcom,thermal-mitigation = <2350 1000 800 600>; //<2350 1000 800 0>;
+        qcom,fastchg-current-max-ma = <2500>;     
         //qcom,disable-apsd;
         qcom,bms-psy-name = "bms";
         qcom,iterm-disabled;
@@ -272,7 +272,7 @@
 	qcom,battery-data = <&mtp_batterydata>;
 	//+Other_platform_modify 20150927 huangfusheng.wt add dts config from pm8916 
        	qcom,v-cutoff-uv = <3400000>;
-	qcom,max-voltage-uv = <4400000>;
+	qcom,max-voltage-uv = <4425000>;
 	qcom,r-conn-mohm = <0>;
 	qcom,shutdown-soc-valid-limit = <100>;
 	qcom,low-soc-calculate-soc-threshold = <15>;

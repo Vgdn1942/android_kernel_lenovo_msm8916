@@ -30,35 +30,35 @@
 #include <linux/qpnp/qpnp-adc.h>
 
  /* constants */
-#define USB2_MIN_CURRENT_MA		100
-#define USB2_MAX_CURRENT_MA		500
-#define USB3_MIN_CURRENT_MA		150
-#define USB3_MAX_CURRENT_MA		900
-#define AC_CHG_CURRENT_MASK		0x70
-#define AC_CHG_CURRENT_SHIFT		4
-#define SM5414_IRQ_REG_COUNT		6
-#define SM5414_FAST_CHG_MIN_MA		100
-#define SM5414_FAST_CHG_MAX_MA		2500
-#define SM5414_DEFAULT_BATT_CAPACITY	50
-#define SM5414_BATT_GOOD_THRE_2P5	0x1
+#define USB2_MIN_CURRENT_MA     100
+#define USB2_MAX_CURRENT_MA     450
+#define USB3_MIN_CURRENT_MA     150
+#define USB3_MAX_CURRENT_MA     850
+#define AC_CHG_CURRENT_MASK     0x70
+#define AC_CHG_CURRENT_SHIFT        4
+#define SM5414_IRQ_REG_COUNT        6
+#define SM5414_FAST_CHG_MIN_MA      100
+#define SM5414_FAST_CHG_MAX_MA      2500
+#define SM5414_DEFAULT_BATT_CAPACITY    50
+#define SM5414_BATT_GOOD_THRE_2P5   0x1
 
 /* 
  * SM5414 Registers.
  */
-#define SM5414_INT1		    0x00
-#define SM5414_INT2		    0x01
-#define SM5414_INT3		    0x02
-#define SM5414_INTMASK1		0x03
-#define SM5414_INTMASK2		0x04
-#define SM5414_INTMASK3		0x05
-#define SM5414_STATUS		0x06
-#define SM5414_CTRL		    0x07
-#define SM5414_VBUSCTRL		0x08
-#define SM5414_CHGCTRL1		0x09
-#define SM5414_CHGCTRL2		0x0A
-#define SM5414_CHGCTRL3		0x0B
-#define SM5414_CHGCTRL4		0x0C
-#define SM5414_CHGCTRL5		0x0D
+#define SM5414_INT1         0x00
+#define SM5414_INT2         0x01
+#define SM5414_INT3         0x02
+#define SM5414_INTMASK1     0x03
+#define SM5414_INTMASK2     0x04
+#define SM5414_INTMASK3     0x05
+#define SM5414_STATUS       0x06
+#define SM5414_CTRL         0x07
+#define SM5414_VBUSCTRL     0x08
+#define SM5414_CHGCTRL1     0x09
+#define SM5414_CHGCTRL2     0x0A
+#define SM5414_CHGCTRL3     0x0B
+#define SM5414_CHGCTRL4     0x0C
+#define SM5414_CHGCTRL5     0x0D
 
 #define SM5414_REG_NUM 0x0E 
 
@@ -68,57 +68,57 @@
 *
 *********************************************************/
 //INT1
-#define SM5414_INT1_THEMREG		0x01
-#define SM5414_INT1_THEMSHDN	0x02
-#define SM5414_INT1_BATOVP		0x04
-#define SM5414_INT1_VBUSLIMIT	0x08
-#define SM5414_INT1_AICL		0x10
-#define SM5414_INT1_VBUSINOK	0x20
-#define SM5414_INT1_VBUSUVLO	0x40
-#define SM5414_INT1_VBUSOVP		0x80
+#define SM5414_INT1_THEMREG     0x01
+#define SM5414_INT1_THEMSHDN    0x02
+#define SM5414_INT1_BATOVP      0x04
+#define SM5414_INT1_VBUSLIMIT   0x08
+#define SM5414_INT1_AICL        0x10
+#define SM5414_INT1_VBUSINOK    0x20
+#define SM5414_INT1_VBUSUVLO    0x40
+#define SM5414_INT1_VBUSOVP     0x80
 #define SM5414_INT1_MASK        0xFF
 #define SM5414_INT1_SHIFT       0
 //INT2    
-#define SM5414_INT2_TOPOFF		0x01
-#define SM5414_INT2_DONE		0x02
-#define SM5414_INT2_CHGRSTF		0x04
-#define SM5414_INT2_PRETMROFF	0x08
-#define SM5414_INT2_OTGFAIL		0x10
-#define SM5414_INT2_WEAKBAT		0x20
-#define SM5414_INT2_NOBAT		0x40
-#define SM5414_INT2_FASTTMROFF	0x80
+#define SM5414_INT2_TOPOFF      0x01
+#define SM5414_INT2_DONE        0x02
+#define SM5414_INT2_CHGRSTF     0x04
+#define SM5414_INT2_PRETMROFF   0x08
+#define SM5414_INT2_OTGFAIL     0x10
+#define SM5414_INT2_WEAKBAT     0x20
+#define SM5414_INT2_NOBAT       0x40
+#define SM5414_INT2_FASTTMROFF  0x80
 #define SM5414_INT2_MASK        0xFF
 #define SM5414_INT2_SHIFT       0
 //INT3    
-#define SM5414_INT3_DISLIMIT	0x01
-#define SM5414_INT3_VSYSOLP		0x02
-#define SM5414_INT3_VSYSNG		0x04
-#define SM5414_INT3_VSYSOK		0x08
+#define SM5414_INT3_DISLIMIT    0x01
+#define SM5414_INT3_VSYSOLP     0x02
+#define SM5414_INT3_VSYSNG      0x04
+#define SM5414_INT3_VSYSOK      0x08
 #define SM5414_INT3_MASK        0x0F
 #define SM5414_INT3_SHIFT       0
 //INTMSK1
-#define SM5414_INTMSK1_THEMREGM		0x01
-#define SM5414_INTMSK1_THEMSHDNM	0x02
-#define SM5414_INTMSK1_BATOVPM		0x04
-#define SM5414_INTMSK1_VBUSLIMITM	0x08
-#define SM5414_INTMSK1_AICLM		0x10
-#define SM5414_INTMSK1_VBUSINOKM	0x20
-#define SM5414_INTMSK1_VBUSUVLOM	0x40
-#define SM5414_INTMSK1_VBUSOVPM		0x80
+#define SM5414_INTMSK1_THEMREGM     0x01
+#define SM5414_INTMSK1_THEMSHDNM    0x02
+#define SM5414_INTMSK1_BATOVPM      0x04
+#define SM5414_INTMSK1_VBUSLIMITM   0x08
+#define SM5414_INTMSK1_AICLM        0x10
+#define SM5414_INTMSK1_VBUSINOKM    0x20
+#define SM5414_INTMSK1_VBUSUVLOM    0x40
+#define SM5414_INTMSK1_VBUSOVPM     0x80
 //INTMSK2    
-#define SM5414_INTMSK2_TOPOFFM		0x01
-#define SM5414_INTMSK2_DONEM		0x02
-#define SM5414_INTMSK2_CHGRSTFM		0x04
-#define SM5414_INTMSK2_PRETMROFFM	0x08
-#define SM5414_INTMSK2_OTGFAILM		0x10
-#define SM5414_INTMSK2_WEAKBATM		0x20
-#define SM5414_INTMSK2_NOBATM		0x40
-#define SM5414_INTMSK2_FASTTMROFFM	0x80
+#define SM5414_INTMSK2_TOPOFFM      0x01
+#define SM5414_INTMSK2_DONEM        0x02
+#define SM5414_INTMSK2_CHGRSTFM     0x04
+#define SM5414_INTMSK2_PRETMROFFM   0x08
+#define SM5414_INTMSK2_OTGFAILM     0x10
+#define SM5414_INTMSK2_WEAKBATM     0x20
+#define SM5414_INTMSK2_NOBATM       0x40
+#define SM5414_INTMSK2_FASTTMROFFM  0x80
 //INTMSK3    
-#define SM5414_INTMSK3_DISLIMITM	0x01
-#define SM5414_INTMSK3_VSYSOLPM		0x02
-#define SM5414_INTMSK3_VSYSNGM		0x04
-#define SM5414_INTMSK3_VSYSOKM		0x08
+#define SM5414_INTMSK3_DISLIMITM    0x01
+#define SM5414_INTMSK3_VSYSOLPM     0x02
+#define SM5414_INTMSK3_VSYSNGM      0x04
+#define SM5414_INTMSK3_VSYSOKM      0x08
 //STATUS
 #define SM5414_STATUS_VBUSOVP_MASK          0x1
 #define SM5414_STATUS_VBUSOVP_SHIFT         7
@@ -271,7 +271,10 @@
 #define VBUSLIMIT_1900mA     36
 #define VBUSLIMIT_1950mA     37
 #define VBUSLIMIT_2000mA     38
-#define VBUSLIMIT_2050mA     39
+#define VBUSLIMIT_2100mA     39
+#define VBUSLIMIT_2150mA     40
+#define VBUSLIMIT_2200mA     41
+#define VBUSLIMIT_2350mA     42
 
 // AICL TH
 #define AICL_THRESHOLD_4_3_V         0
@@ -335,18 +338,18 @@
 #define WEAKBAT_MASK     0xF0
 
 // top-off charge current
-#define TOPOFF_100mA       0
-#define TOPOFF_150mA       1
-#define TOPOFF_200mA       2
-#define TOPOFF_250mA       3
-#define TOPOFF_300mA       4
-#define TOPOFF_350mA       5
-#define TOPOFF_400mA       6
-#define TOPOFF_450mA       7
-#define TOPOFF_500mA       8
-#define TOPOFF_550mA       9
-#define TOPOFF_600mA      10
-#define TOPOFF_650mA      11
+#define TOPOFF_450mA       0
+#define TOPOFF_500mA       1
+#define TOPOFF_550mA       2
+#define TOPOFF_600mA       3
+#define TOPOFF_650mA       4
+#define TOPOFF_700mA       5
+#define TOPOFF_750mA       6
+#define TOPOFF_800mA       7
+#define TOPOFF_850mA       8
+#define TOPOFF_900mA       9
+#define TOPOFF_950mA      10
+#define TOPOFF_1000mA     11
 #define TOPOFF_MASK     0x07
 
 // discharge current
@@ -404,8 +407,8 @@ enum {
 };
 
 enum path_type {
-	USB,
-	DC,
+    USB,
+    DC,
 };
 
 struct sm5414_regulator {
@@ -439,8 +442,8 @@ struct sm5414_charger {
     int         nshdn_gpio; //nSHDN
     int         charging_disabled; // state charging
     int         fastchg_current_max_ma;
-	//Correction
-	int psy_usb_ma;
+    //Correction
+    int psy_usb_ma;
     unsigned int        cool_bat_ma;
     unsigned int        warm_bat_ma;
     unsigned int        cool_bat_mv;
@@ -479,11 +482,11 @@ struct sm5414_charger {
     int         cool_bat_decidegc;
     int         warm_bat_decidegc;
     int         bat_present_decidegc;
-	//Correction
-	unsigned int thermal_levels;
-	unsigned int therm_lvl_sel;
-	int *thermal_mitigation;
-	struct mutex current_change_lock;
+    //Correction
+    unsigned int thermal_levels;
+    unsigned int therm_lvl_sel;
+    int *thermal_mitigation;
+    struct mutex current_change_lock;
 
     /* i2c pull up regulator */
     struct regulator    *vcc_i2c;
@@ -601,23 +604,23 @@ static void dump_regs(struct sm5414_charger *chip)
 static int disable_software_temp_monitor = 0;
 int dis_sof_temp_monitor_set(const char *val, const struct kernel_param *kp)
 {
-	if (!val) val = "1";
-	return strtobool(val, kp->arg);
+    if (!val) val = "1";
+    return strtobool(val, kp->arg);
 }
 
 int dis_sof_temp_monitor_get(char *buffer, const struct kernel_param *kp)
 {
-	disable_software_temp_monitor = 1;
-	return sprintf(buffer, "%c", *(bool *)kp->arg ? 'Y' : 'N');
+    disable_software_temp_monitor = 1;
+    return sprintf(buffer, "%c", *(bool *)kp->arg ? 'Y' : 'N');
 }
 
 static struct kernel_param_ops dis_sof_temp_monitor_ops = {
-	.set = dis_sof_temp_monitor_set,
-	.get = dis_sof_temp_monitor_get,
+    .set = dis_sof_temp_monitor_set,
+    .get = dis_sof_temp_monitor_get,
 };
 
 module_param_cb(disable_software_temp_monitor, &dis_sof_temp_monitor_ops
-							, &disable_software_temp_monitor, 0644);
+                            , &disable_software_temp_monitor, 0644);
 
 MODULE_PARM_DESC(debug, "1:disable software temp monitor , 0:enable,default:0");
 
@@ -653,9 +656,9 @@ static int sm5414_fastchg_current_set(struct sm5414_charger *chip,
                 SM5414_CHGCTRL2_FASTCHG_MASK, i);
 }
 
-#define MIN_FLOAT_MV		4100
-#define MAX_FLOAT_MV		4475
-#define VFLOAT_STEP_MV		25
+#define MIN_FLOAT_MV        4100
+#define MAX_FLOAT_MV        4475
+#define VFLOAT_STEP_MV      25
 //BATREG
 static int sm5414_float_voltage_set(struct sm5414_charger *chip, int vfloat_mv)
 {
@@ -673,9 +676,9 @@ static int sm5414_float_voltage_set(struct sm5414_charger *chip, int vfloat_mv)
     return sm5414_masked_write(chip, SM5414_CHGCTRL3, SM5414_CHGCTRL3_BATREG_MASK << SM5414_CHGCTRL3_BATREG_SHIFT, temp);
 }
 
-#define MIN_TOPOFF_MA		100
-#define MAX_TOPOFF_MA		650
-#define CTOPOFF_STEP_MA		50
+#define MIN_TOPOFF_MA       450
+#define MAX_TOPOFF_MA       1000
+#define CTOPOFF_STEP_MA     50
 //TOPOFF & Autostop
 static int sm5414_term_current_set(struct sm5414_charger *chip)
 {
@@ -762,15 +765,15 @@ static int sm5414_charging_disable(struct sm5414_charger *chip,
         disabled_status = false ;
     }
 
-	if ((!!disabled_status) != (!!chip->charging_disabled_status))
-	{
-		chip->charging_disabled_status = disabled_status;
-	}
+    if ((!!disabled_status) != (!!chip->charging_disabled_status))
+    {
+        chip->charging_disabled_status = disabled_status;
+    }
 
     nCHG = gpio_get_value(chip->chgen_gpio);       
     pr_debug("nCHG = %d disabled = %d\n", nCHG, disabled_status);
 
-	#if 0
+    #if 0
     if ((disabled & THERMAL) /*|| (disabled & SOC)*/)
     {   
         pr_debug("Battery is (disabled & THERMAL) = %d or (disabled & SOC) = %d. Can't turn on charging function\n", 
@@ -781,7 +784,7 @@ static int sm5414_charging_disable(struct sm5414_charger *chip,
 
     if (nCHG == disable)
         goto skip;
-	#endif
+    #endif
 
     rc = __sm5414_charging_disable(chip, !!disable);
     if (rc) {
@@ -797,11 +800,11 @@ static int sm5414_charging_disable(struct sm5414_charger *chip,
 }
 
 
-#define VFLT_300MV			0x0C
-#define VFLT_200MV			0x08
-#define VFLT_100MV			0x04
-#define VFLT_50MV			0x00
-#define VFLT_MASK			0x0C
+#define VFLT_300MV          0x0C
+#define VFLT_200MV          0x08
+#define VFLT_100MV          0x04
+#define VFLT_50MV           0x00
+#define VFLT_MASK           0x0C
 
 static int sm5414_chg_otg_regulator_enable(struct regulator_dev *rdev)
 {
@@ -1089,41 +1092,41 @@ static int sm5414_get_prop_batt_status(struct sm5414_charger *chip)
 
 static int get_prop_charge_type(struct sm5414_charger *chip)
 {
-	int rc;
-	u8 reg = 0;
+    int rc;
+    u8 reg = 0;
         int nCHG = 0;
         
-	 if (!sm5414_get_prop_batt_present(chip))
-		return POWER_SUPPLY_CHARGE_TYPE_NONE;
-	
-	rc = sm5414_read_reg(chip, SM5414_STATUS, &reg);
-	   if (rc) {
-		   dev_err(chip->dev, "Couldn't read STAT_C rc = %d\n", rc);
-		   return POWER_SUPPLY_CHARGE_TYPE_NONE;
-	   }
-	   nCHG = gpio_get_value(chip->chgen_gpio);
-	   dev_dbg(chip->dev, "%s: SM5414_STATUS=0x%x, nCHG = %d\n", __func__, reg, nCHG);	   
+     if (!sm5414_get_prop_batt_present(chip))
+        return POWER_SUPPLY_CHARGE_TYPE_NONE;
+    
+    rc = sm5414_read_reg(chip, SM5414_STATUS, &reg);
+       if (rc) {
+           dev_err(chip->dev, "Couldn't read STAT_C rc = %d\n", rc);
+           return POWER_SUPPLY_CHARGE_TYPE_NONE;
+       }
+       nCHG = gpio_get_value(chip->chgen_gpio);
+       dev_dbg(chip->dev, "%s: SM5414_STATUS=0x%x, nCHG = %d\n", __func__, reg, nCHG);     
 
        if (!(reg & (SM5414_STATUS_VBUSUVLO_MASK << SM5414_STATUS_VBUSUVLO_SHIFT)) && (nCHG == 0))
         return POWER_SUPPLY_CHARGE_TYPE_FAST;
 
-	return POWER_SUPPLY_CHARGE_TYPE_NONE;
+    return POWER_SUPPLY_CHARGE_TYPE_NONE;
 }
 
 
 static int get_prop_current_now(struct sm5414_charger *chip)
 {
-	union power_supply_propval ret = {0,};
+    union power_supply_propval ret = {0,};
 
-	if (chip->bms_psy) {
-		chip->bms_psy->get_property(chip->bms_psy,
-			  POWER_SUPPLY_PROP_CURRENT_NOW, &ret);
-		return ret.intval;
-	} else {
-		printk("No BMS supply registered return 0\n");
-	}
+    if (chip->bms_psy) {
+        chip->bms_psy->get_property(chip->bms_psy,
+              POWER_SUPPLY_PROP_CURRENT_NOW, &ret);
+        return ret.intval;
+    } else {
+        printk("No BMS supply registered return 0\n");
+    }
 
-	return 0;
+    return 0;
 }
 
 static int sm5414_get_prop_batt_health(struct sm5414_charger *chip)
@@ -1131,22 +1134,22 @@ static int sm5414_get_prop_batt_health(struct sm5414_charger *chip)
     union power_supply_propval ret = {0, };
     if(!disable_software_temp_monitor){
        if (chip->batt_hot)
-		    ret.intval = POWER_SUPPLY_HEALTH_OVERHEAT;
-	    else if (chip->batt_cold)
-		    ret.intval = POWER_SUPPLY_HEALTH_COLD;
-	    else if (chip->batt_warm)
-		    ret.intval = POWER_SUPPLY_HEALTH_WARM;
-	    else if (chip->batt_cool)
-		    ret.intval = POWER_SUPPLY_HEALTH_COOL;
-	    else if (chip->psy_health_sts == POWER_SUPPLY_HEALTH_OVERVOLTAGE)
-		    ret.intval = POWER_SUPPLY_HEALTH_OVERVOLTAGE;
-	    else
-		    ret.intval = POWER_SUPPLY_HEALTH_GOOD;
+            ret.intval = POWER_SUPPLY_HEALTH_OVERHEAT;
+        else if (chip->batt_cold)
+            ret.intval = POWER_SUPPLY_HEALTH_COLD;
+        else if (chip->batt_warm)
+            ret.intval = POWER_SUPPLY_HEALTH_WARM;
+        else if (chip->batt_cool)
+            ret.intval = POWER_SUPPLY_HEALTH_COOL;
+        else if (chip->psy_health_sts == POWER_SUPPLY_HEALTH_OVERVOLTAGE)
+            ret.intval = POWER_SUPPLY_HEALTH_OVERVOLTAGE;
+        else
+            ret.intval = POWER_SUPPLY_HEALTH_GOOD;
     }
     else
         ret.intval = POWER_SUPPLY_HEALTH_GOOD;
 
-	    return ret.intval;
+        return ret.intval;
 }
 
 static int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
@@ -1156,9 +1159,9 @@ static int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
 
     dev_err(chip->dev, "%s: USB current_ma = %d\n", __func__, current_ma);
 
-	//Correction
-	current_ma = min(current_ma, chip->thermal_mitigation[chip->therm_lvl_sel]);
-	dev_err(chip->dev, "%s: USB after current_ma = %d\n", __func__, current_ma);
+    //Correction
+    current_ma = min(current_ma, chip->thermal_mitigation[chip->therm_lvl_sel]);
+    dev_err(chip->dev, "%s: USB after current_ma = %d\n", __func__, current_ma);
  
     if (current_ma < USB3_MIN_CURRENT_MA && current_ma != 2)
         current_ma = USB2_MIN_CURRENT_MA;
@@ -1167,11 +1170,11 @@ static int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
         /* USB 2.0 - 100mA */
         i = VBUSLIMIT_100mA;
     } else if (current_ma == USB2_MAX_CURRENT_MA) {
-        /* USB 2.0 - 500mA */
-        i = VBUSLIMIT_500mA;
+        /* USB 2.0 - 450mA */
+        i = VBUSLIMIT_450mA;
     } else if (current_ma == USB3_MAX_CURRENT_MA) {
-        /* USB 3.0 - 900mA */
-        i = VBUSLIMIT_900mA;
+        /* USB 3.0 - 850mA */
+        i = VBUSLIMIT_850mA;
     } else if (current_ma > USB2_MAX_CURRENT_MA) {
         /* HC mode  - if none of the above */
 
@@ -1201,7 +1204,7 @@ sm5414_batt_property_is_writeable(struct power_supply *psy,
     switch (psp) {
     case POWER_SUPPLY_PROP_CHARGING_ENABLED:
     case POWER_SUPPLY_PROP_CAPACITY:
-	case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
+    case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
         return 1;
     default:
         break;
@@ -1218,140 +1221,140 @@ static int bound_soc(int soc)
 }
 
 static int sm5414_set_appropriate_current(struct sm5414_charger *chip,
-						enum path_type path)
+                        enum path_type path)
 {
-	int therm_ma;
-	//int path_current = (path == USB) ? chip->usb_psy_ma : chip->dc_psy_ma;
-	//int (*func)(struct sm5414_charger *chip, int current_ma);
-	int rc = 0;
+    int therm_ma;
+    //int path_current = (path == USB) ? chip->usb_psy_ma : chip->dc_psy_ma;
+    //int (*func)(struct sm5414_charger *chip, int current_ma);
+    int rc = 0;
 
-	if (!chip->usb_psy && path == USB)
-		return 0;
-	/*
-	 * If battery is absent do not modify the current at all, these
-	 * would be some appropriate values set by the bootloader or default
-	 * configuration and since it is the only source of power we should
-	 * not change it
-	 */
-	if (chip->battery_missing) {
-		pr_debug("ignoring current request since battery is absent\n");
-		return 0;
-	}
+    if (!chip->usb_psy && path == USB)
+        return 0;
+    /*
+     * If battery is absent do not modify the current at all, these
+     * would be some appropriate values set by the bootloader or default
+     * configuration and since it is the only source of power we should
+     * not change it
+     */
+    if (chip->battery_missing) {
+        pr_debug("ignoring current request since battery is absent\n");
+        return 0;
+    }
 
-	#if 0
-	if (path == USB) {
-		path_current = chip->usb_psy_ma;
-		func = smb135x_set_usb_chg_current;
-	} else {
-		path_current = chip->dc_psy_ma;
-		func = smb135x_set_dc_chg_current;
-		if (chip->dc_psy_type == -EINVAL)
-			func = NULL;
-	}
-	#endif
+    #if 0
+    if (path == USB) {
+        path_current = chip->usb_psy_ma;
+        func = smb135x_set_usb_chg_current;
+    } else {
+        path_current = chip->dc_psy_ma;
+        func = smb135x_set_dc_chg_current;
+        if (chip->dc_psy_type == -EINVAL)
+            func = NULL;
+    }
+    #endif
 
-//	if (chip->therm_lvl_sel >= 0
-//			&& chip->therm_lvl_sel < (chip->thermal_levels - 1))
-	if (chip->therm_lvl_sel >= 0
-			&& chip->therm_lvl_sel <= (chip->thermal_levels - 1))
+//  if (chip->therm_lvl_sel >= 0
+//          && chip->therm_lvl_sel < (chip->thermal_levels - 1))
+    if (chip->therm_lvl_sel >= 0
+            && chip->therm_lvl_sel <= (chip->thermal_levels - 1))
 
-		/*
-		 * consider thermal limit only when it is active and not at
-		 * the highest level
-		 */
-		therm_ma = chip->thermal_mitigation[chip->therm_lvl_sel];
-	else
-		//correction
-		pr_debug("Not effective thermal levels\n");
+        /*
+         * consider thermal limit only when it is active and not at
+         * the highest level
+         */
+        therm_ma = chip->thermal_mitigation[chip->therm_lvl_sel];
+    else
+        //correction
+        pr_debug("Not effective thermal levels\n");
 
-	//Correction
-	therm_ma = min(therm_ma, chip->psy_usb_ma);
-	pr_debug("thermal limited charging current to %d\n", therm_ma);
-	#if 0
-	if (func != NULL)
-		rc = func(chip, current_ma);
-	if (rc < 0)
-		dev_err(chip->dev, "Couldn't set %s current to min(%d, %d)rc = %d\n",
-				path == USB ? "usb" : "dc",
-				therm_ma, path_current,
-				rc);
-	#else
-	//Correction
-	sm5414_set_usb_chg_current(chip,  therm_ma);
-	#endif
-	return rc;
+    //Correction
+    therm_ma = min(therm_ma, chip->psy_usb_ma);
+    pr_debug("thermal limited charging current to %d\n", therm_ma);
+    #if 0
+    if (func != NULL)
+        rc = func(chip, current_ma);
+    if (rc < 0)
+        dev_err(chip->dev, "Couldn't set %s current to min(%d, %d)rc = %d\n",
+                path == USB ? "usb" : "dc",
+                therm_ma, path_current,
+                rc);
+    #else
+    //Correction
+    sm5414_set_usb_chg_current(chip,  therm_ma);
+    #endif
+    return rc;
 }
 
 
 static int sm5414_system_temp_level_set(struct sm5414_charger *chip,
-								int lvl_sel)
+                                int lvl_sel)
 {
-	int rc = 0;
-	int prev_therm_lvl;
+    int rc = 0;
+    int prev_therm_lvl;
 
-	if (!chip->thermal_mitigation) {
-		pr_err("Thermal mitigation not supported\n");
-		return -EINVAL;
-	}
+    if (!chip->thermal_mitigation) {
+        pr_err("Thermal mitigation not supported\n");
+        return -EINVAL;
+    }
 
-	if (lvl_sel < 0) {
-		pr_err("Unsupported level selected %d\n", lvl_sel);
-		return -EINVAL;
-	}
+    if (lvl_sel < 0) {
+        pr_err("Unsupported level selected %d\n", lvl_sel);
+        return -EINVAL;
+    }
 
-	if (lvl_sel >= chip->thermal_levels) {
-		pr_err("Unsupported level selected %d forcing %d\n", lvl_sel,
-				chip->thermal_levels - 1);
-		lvl_sel = chip->thermal_levels - 1;
-	}
+    if (lvl_sel >= chip->thermal_levels) {
+        pr_err("Unsupported level selected %d forcing %d\n", lvl_sel,
+                chip->thermal_levels - 1);
+        lvl_sel = chip->thermal_levels - 1;
+    }
 
-	if (lvl_sel == chip->therm_lvl_sel)
-		return 0;
+    if (lvl_sel == chip->therm_lvl_sel)
+        return 0;
 
-	mutex_lock(&chip->current_change_lock);
-	prev_therm_lvl = chip->therm_lvl_sel;
-	chip->therm_lvl_sel = lvl_sel;
-	printk("%s : prev_therm_lvl = %d chip->therm_lvl_sel = %d\n",
-		__func__, prev_therm_lvl, chip->therm_lvl_sel);
+    mutex_lock(&chip->current_change_lock);
+    prev_therm_lvl = chip->therm_lvl_sel;
+    chip->therm_lvl_sel = lvl_sel;
+    printk("%s : prev_therm_lvl = %d chip->therm_lvl_sel = %d\n",
+        __func__, prev_therm_lvl, chip->therm_lvl_sel);
 
-	//Other 20151012 guanyuwei@wt disable disable-charging func cause high temperature charging test
-	#if 0
-	//Correction
-	if (chip->therm_lvl_sel == (chip->thermal_levels - 1)) {
-		/*
-		 * Disable charging if highest value selected by
-		 * setting the DC and USB path in suspend
-		 */
-		rc = sm5414_charging_disable(chip, /*DC, */THERMAL, true);
-		if (rc < 0) {
-			dev_err(chip->dev,
-				"Couldn't set dc suspend rc %d\n", rc);
-			goto out;
-		}
-		goto out;
-	}
-	#endif
+    //Other 20151012 guanyuwei@wt disable disable-charging func cause high temperature charging test
+    #if 0
+    //Correction
+    if (chip->therm_lvl_sel == (chip->thermal_levels - 1)) {
+        /*
+         * Disable charging if highest value selected by
+         * setting the DC and USB path in suspend
+         */
+        rc = sm5414_charging_disable(chip, /*DC, */THERMAL, true);
+        if (rc < 0) {
+            dev_err(chip->dev,
+                "Couldn't set dc suspend rc %d\n", rc);
+            goto out;
+        }
+        goto out;
+    }
+    #endif
 
-	sm5414_set_appropriate_current(chip, USB);
+    sm5414_set_appropriate_current(chip, USB);
 
-	#if 0
-	if (prev_therm_lvl == chip->thermal_levels - 1) {
-		/*
-		 * If previously highest value was selected charging must have
-		 * been disabed. Enable charging by taking the DC and USB path
-		 * out of suspend.
-		 */
-		rc = sm5414_charging_disable(chip,/* DC,*/ THERMAL, false);
-		if (rc < 0) {
-			dev_err(chip->dev,
-				"Couldn't set dc suspend rc %d\n", rc);
-			goto out;
-		}
-	}
+    #if 0
+    if (prev_therm_lvl == chip->thermal_levels - 1) {
+        /*
+         * If previously highest value was selected charging must have
+         * been disabed. Enable charging by taking the DC and USB path
+         * out of suspend.
+         */
+        rc = sm5414_charging_disable(chip,/* DC,*/ THERMAL, false);
+        if (rc < 0) {
+            dev_err(chip->dev,
+                "Couldn't set dc suspend rc %d\n", rc);
+            goto out;
+        }
+    }
 out:
-	#endif
-	mutex_unlock(&chip->current_change_lock);
-	return rc;
+    #endif
+    mutex_unlock(&chip->current_change_lock);
+    return rc;
 }
 
 
@@ -1376,7 +1379,7 @@ static int sm5414_battery_set_property(struct power_supply *psy,
                     "Couldn't set charging disable rc = %d\n",rc);
             } else {
                 chip->batt_full = true;
-				Chg_Full_Flag = true; //Other_platform_modify 20150927 huangfusheng.wt solve chg not disable
+                Chg_Full_Flag = true; //Other_platform_modify 20150927 huangfusheng.wt solve chg not disable
                 pr_debug("status = FULL, batt_full = %d\n",
                             chip->batt_full);
             }
@@ -1385,7 +1388,7 @@ static int sm5414_battery_set_property(struct power_supply *psy,
         case POWER_SUPPLY_STATUS_DISCHARGING:
             pr_debug("%s : POWER_SUPPLY_PROP_STATUS / POWER_SUPPLY_STATUS_DISCHARGING\n",__func__);
             chip->batt_full = false;
-			Chg_Full_Flag = false; //Other_platform_modify 20150927 huangfusheng.wt solve chg not disable
+            Chg_Full_Flag = false; //Other_platform_modify 20150927 huangfusheng.wt solve chg not disable
             power_supply_changed(&chip->batt_psy);
             dev_dbg(chip->dev, "status = DISCHARGING, batt_full = %d\n",
                             chip->batt_full);
@@ -1399,7 +1402,7 @@ static int sm5414_battery_set_property(struct power_supply *psy,
                                 rc);
             } else {
                 chip->batt_full = false;
-				Chg_Full_Flag = false; //Other_platform_modify 20150927 huangfusheng.wt solve chg not disable
+                Chg_Full_Flag = false; //Other_platform_modify 20150927 huangfusheng.wt solve chg not disable
                 dev_dbg(chip->dev, "status = CHARGING, batt_full = %d\n",
                             chip->batt_full);
             }
@@ -1418,9 +1421,9 @@ static int sm5414_battery_set_property(struct power_supply *psy,
         chip->fake_battery_soc = bound_soc(val->intval);
         power_supply_changed(&chip->batt_psy);
         break;
-	case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
-		sm5414_system_temp_level_set(chip, val->intval);
-		break;
+    case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
+        sm5414_system_temp_level_set(chip, val->intval);
+        break;
     default:
         return -EINVAL;
     }
@@ -1441,8 +1444,8 @@ static int sm5414_battery_get_property(struct power_supply *psy,
         pr_debug("%s : POWER_SUPPLY_PROP_STATUS : val->intval = %d\n",__func__, val->intval);
         break;
     case POWER_SUPPLY_PROP_CHARGE_TYPE:
-	val->intval = get_prop_charge_type(chip);
-	break;
+    val->intval = get_prop_charge_type(chip);
+    break;
     case POWER_SUPPLY_PROP_PRESENT:
         val->intval = sm5414_get_prop_batt_present(chip);
         pr_debug("%s : POWER_SUPPLY_PROP_PRESENT : val->intval = %d\n",__func__, val->intval);
@@ -1477,13 +1480,13 @@ static int sm5414_battery_get_property(struct power_supply *psy,
         pr_debug("%s : POWER_SUPPLY_PROP_VOLTAGE_NOW : val->intval = %d\n",__func__, val->intval);
         break;
     case POWER_SUPPLY_PROP_CURRENT_NOW:
-		val->intval = get_prop_current_now(chip);
+        val->intval = get_prop_current_now(chip);
         pr_debug("%s : POWER_SUPPLY_PROP_CURRENT_NOW : val->intval = %d\n",__func__, val->intval);
-		break;
-	case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
-		val->intval = chip->therm_lvl_sel;
-		pr_debug("%s : POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL : val->intval = %d\n",__func__, val->intval);
-		break;
+        break;
+    case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
+        val->intval = chip->therm_lvl_sel;
+        pr_debug("%s : POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL : val->intval = %d\n",__func__, val->intval);
+        break;
     default:
         return -EINVAL;
     }
@@ -1497,7 +1500,7 @@ static int vbusinok_complete(struct sm5414_charger *chip, u8 status)
 
     pr_debug("%s\n", __func__);
     sm5414_read_reg(chip, SM5414_CTRL, &val);
-	Chg_Full_Flag = false; //Other_platform_modify 20151228 huangfusheng.wt solve chg full flag not resume , no bug id
+    Chg_Full_Flag = false; //Other_platform_modify 20151228 huangfusheng.wt solve chg full flag not resume , no bug id
     
     if (val & SM5414_CTRL_ENBOOST_MASK)
     {
@@ -1516,14 +1519,14 @@ static int vbusinok_complete(struct sm5414_charger *chip, u8 status)
                 chip->chg_present);
         power_supply_set_present(chip->usb_psy, chip->chg_present);
 
-		if(chip->chg_present == 0)  //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
-		{
-			 sm5414_charging_disable(chip, USER, 1);
-		}
-		else
-		{
+        if(chip->chg_present == 0)  //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
+        {
+             sm5414_charging_disable(chip, USER, 1);
+        }
+        else
+        {
         sm5414_charging_disable(chip, USER, 0);
-		}
+        }
     }
     
     return 0;
@@ -1570,7 +1573,7 @@ static int chg_ov(struct sm5414_charger *chip, u8 status)
                 chip->usb_psy, chip->psy_health_sts);
     power_supply_changed(chip->usb_psy);
 
-	sm5414_charging_disable(chip, USER, 1); //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
+    sm5414_charging_disable(chip, USER, 1); //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
     return 0;
 }
 
@@ -1861,7 +1864,7 @@ static int sm5414_chg_read_init(void *dev_id)
     else
     {
        vbusinok_complete(chip, 1);                      
-	   chip->psy_health_sts = POWER_SUPPLY_HEALTH_GOOD; //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
+       chip->psy_health_sts = POWER_SUPPLY_HEALTH_GOOD; //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
        pr_debug("%s : VBUSOK\n", __func__);
     }
 
@@ -1906,7 +1909,7 @@ static irqreturn_t sm5414_chg_stat_handler(int irq, void *dev_id)
        && !(status & (SM5414_STATUS_VBUSOVP_MASK << SM5414_STATUS_VBUSOVP_SHIFT)))
    {
        vbusinok_complete(chip, 1);
-	   chip->psy_health_sts = POWER_SUPPLY_HEALTH_GOOD; //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
+       chip->psy_health_sts = POWER_SUPPLY_HEALTH_GOOD; //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
        power_supply_changed(&chip->batt_psy);
    }
    else if ((val1 & SM5414_INT1_VBUSUVLO) 
@@ -1914,7 +1917,7 @@ static irqreturn_t sm5414_chg_stat_handler(int irq, void *dev_id)
    {
        vbusinok_complete(chip, 0);        
        chg_uv(chip, 1);
-	   chip->psy_health_sts = POWER_SUPPLY_HEALTH_GOOD; //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
+       chip->psy_health_sts = POWER_SUPPLY_HEALTH_GOOD; //Other_platform_modify 20151106 huangfusheng.wt solve ovp test fail
    }
    else if ((val1 & SM5414_INT1_VBUSOVP) 
        && (status & (SM5414_STATUS_VBUSOVP_MASK << SM5414_STATUS_VBUSOVP_SHIFT)))
@@ -1999,7 +2002,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
     else
         current_limit = prop.intval / 1000;
 
-	chip->psy_usb_ma = current_limit;
+    chip->psy_usb_ma = current_limit;
 
     rc = chip->usb_psy->get_property(chip->usb_psy,
                     POWER_SUPPLY_PROP_TYPE, &prop);
@@ -2026,7 +2029,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
 
-            sm5414_set_usb_chg_current(chip, 500);
+            sm5414_set_usb_chg_current(chip, 450);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
@@ -2045,7 +2048,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
             
-            sm5414_set_usb_chg_current(chip, 1500);
+            sm5414_set_usb_chg_current(chip, 2350);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
@@ -2257,31 +2260,31 @@ static int sm5414_parse_dt(struct sm5414_charger *chip)
 
     pr_debug("jeita_supported = %d", chip->jeita_supported);
 
-	if (of_find_property(node, "qcom,thermal-mitigation",
-		&chip->thermal_levels)) {
-			chip->thermal_mitigation = devm_kzalloc(chip->dev,
-			chip->thermal_levels, GFP_KERNEL);
+    if (of_find_property(node, "qcom,thermal-mitigation",
+        &chip->thermal_levels)) {
+            chip->thermal_mitigation = devm_kzalloc(chip->dev,
+            chip->thermal_levels, GFP_KERNEL);
 
-	if (chip->thermal_mitigation == NULL) {
-		pr_err("thermal mitigation kzalloc() failed.\n");
-		return -ENOMEM;
-	}
+    if (chip->thermal_mitigation == NULL) {
+        pr_err("thermal mitigation kzalloc() failed.\n");
+        return -ENOMEM;
+    }
 
-	chip->thermal_levels /= sizeof(int);
-	rc = of_property_read_u32_array(node,
-		"qcom,thermal-mitigation",
-	chip->thermal_mitigation, chip->thermal_levels);
-	pr_debug("thermal_mitigations = %d, %d, %d, %d; thermal_levels = %d\n",
-		chip->thermal_mitigation[0],
-		chip->thermal_mitigation[1],
-		chip->thermal_mitigation[2],
-		chip->thermal_mitigation[3],
-		chip->thermal_levels);
-	if (rc) {
-		pr_err("Couldn't read threm limits rc = %d\n", rc);
-		return rc;
-		}
-	}
+    chip->thermal_levels /= sizeof(int);
+    rc = of_property_read_u32_array(node,
+        "qcom,thermal-mitigation",
+    chip->thermal_mitigation, chip->thermal_levels);
+    pr_debug("thermal_mitigations = %d, %d, %d, %d; thermal_levels = %d\n",
+        chip->thermal_mitigation[0],
+        chip->thermal_mitigation[1],
+        chip->thermal_mitigation[2],
+        chip->thermal_mitigation[3],
+        chip->thermal_levels);
+    if (rc) {
+        pr_err("Couldn't read threm limits rc = %d\n", rc);
+        return rc;
+        }
+    }
 
     rc = of_property_read_u32(node, "qcom,bat-present-decidegc",
                         &batt_present_degree_negative);
@@ -2483,7 +2486,7 @@ static int sm5414_charger_probe(struct i2c_client *client,
     mutex_init(&chip->irq_complete);
     mutex_init(&chip->read_write_lock);
     mutex_init(&chip->path_suspend_lock);
-	mutex_init(&chip->current_change_lock);
+    mutex_init(&chip->current_change_lock);
 
     /* using adc_tm for implementing pmic therm */
     if (chip->using_pmic_therm) {
@@ -2738,26 +2741,26 @@ static int sm5414_resume(struct device *dev)
 
 void sm5414_change_current_backlight_onoff(bool sw,int cur)
 {
-	int rc,temp;
-	int origin_current;
-	struct device_node *node;
-	if(pSm5414)
-	{
-		node = pSm5414->dev->of_node;
-		rc = of_property_read_u32(node, "qcom,fastchg-current-max-ma",
+    int rc,temp;
+    int origin_current;
+    struct device_node *node;
+    if(pSm5414)
+    {
+        node = pSm5414->dev->of_node;
+        rc = of_property_read_u32(node, "qcom,fastchg-current-max-ma",
                         &origin_current);
-		temp = sm5414_get_prop_batt_temp(pSm5414);
-		
-		if(temp>150&&temp<450)
-		{
-			pSm5414->fastchg_current_max_ma = sw?cur:origin_current;
-			 sm5414_set_usb_chg_current(pSm5414, pSm5414->fastchg_current_max_ma);
-			 sm5414_fastchg_current_set(pSm5414, pSm5414->fastchg_current_max_ma);
-		}
-		//printk("XXX::sw=%d,current_max_ma=%d\r\n",sw,pSm5414->fastchg_current_max_ma);//hoper		
-		//power_supply_changed(&pSm5414->batt_psy);//test for full charging		
-		msleep(100);
-	}
+        temp = sm5414_get_prop_batt_temp(pSm5414);
+        
+        if(temp>150&&temp<450)
+        {
+            pSm5414->fastchg_current_max_ma = sw?cur:origin_current;
+             sm5414_set_usb_chg_current(pSm5414, pSm5414->fastchg_current_max_ma);
+             sm5414_fastchg_current_set(pSm5414, pSm5414->fastchg_current_max_ma);
+        }
+        //printk("XXX::sw=%d,current_max_ma=%d\r\n",sw,pSm5414->fastchg_current_max_ma);//hoper     
+        //power_supply_changed(&pSm5414->batt_psy);//test for full charging     
+        msleep(100);
+    }
 
 }
 EXPORT_SYMBOL_GPL(sm5414_change_current_backlight_onoff);
@@ -2797,4 +2800,3 @@ module_i2c_driver(sm5414_charger_driver);
 MODULE_DESCRIPTION("SM5414 Charger");
 MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("i2c:sm5414-charger");
-
