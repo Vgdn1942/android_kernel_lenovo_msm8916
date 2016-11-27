@@ -99,7 +99,6 @@ static unsigned long long tap_time_pre = 0;
 static int touch_nr = 0, x_pre = 0, y_pre = 0;
 static bool touch_cnt = true;
 static int vib_strength = VIB_STRENGTH;
-static int hw_version = 0;
 
 static struct input_dev * wake_dev;
 static DEFINE_MUTEX(pwrkeyworklock);
