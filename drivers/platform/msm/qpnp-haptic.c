@@ -24,10 +24,6 @@
 #include <linux/delay.h>
 #include "../../staging/android/timed_output.h"
 
-#ifdef CONFIG_WAKE_GESTURES
-#include <linux/input/wake_gestures.h>
-#endif
-
 #define QPNP_IRQ_FLAGS	(IRQF_TRIGGER_RISING | \
 			IRQF_TRIGGER_FALLING | \
 			IRQF_ONESHOT)
@@ -1104,13 +1100,6 @@ static void qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
 	mutex_unlock(&hap->lock);
 	schedule_work(&hap->work);
 }
-
-#ifdef CONFIG_WAKE_GESTURES
-void set_vibrate(int value)
-{
-	qpnp_hap_td_enable(&hap->timed_dev, value);
-}
-#endif
 
 /* worker to opeate haptics */
 static void qpnp_hap_worker(struct work_struct *work)
