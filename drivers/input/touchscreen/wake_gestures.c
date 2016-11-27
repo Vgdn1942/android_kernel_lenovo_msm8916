@@ -50,8 +50,6 @@
 #define SWEEP_EDGE		90
 #define SWEEP_Y_LIMIT           SWEEP_Y_MAX-SWEEP_EDGE
 #define SWEEP_X_LIMIT           SWEEP_X_MAX-SWEEP_EDGE
-#define SWEEP_Y_LIMIT_ATMEL     1024-SWEEP_EDGE
-#define SWEEP_X_LIMIT_ATMEL     1024-SWEEP_EDGE
 #define SWEEP_X_B1              299
 #define SWEEP_X_B2              620
 #define SWEEP_Y_START		800
@@ -74,7 +72,6 @@
 #define WAKE_GESTURES_ENABLED	1
 
 #define LOGTAG			"WG"
-#define ATMEL			2
 
 #if (WAKE_GESTURES_ENABLED)
 int gestures_switch = WG_DEFAULT;
@@ -113,9 +110,6 @@ static struct work_struct dt2w_input_work;
 
 static bool is_suspended(void)
 {
-	if (hw_version == ATMEL)
-		return scr_suspended();
-	else
 		return scr_suspended_ft();
 }
 
@@ -490,11 +484,6 @@ static void wg_input_event(struct input_handle *handle, unsigned int type,
 
 static int input_dev_filter(struct input_dev *dev) {
 	if (strstr(dev->name, "ft5x06_ts")) {
-		return 0;
-	} else if (strstr(dev->name, "Atmel")) {
-		hw_version = ATMEL;
-		sweep_y_limit = SWEEP_Y_LIMIT_ATMEL;
-		sweep_x_limit = SWEEP_X_LIMIT_ATMEL;
 		return 0;
 	} else {
 		return 1;
