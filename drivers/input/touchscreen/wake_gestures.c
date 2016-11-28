@@ -43,7 +43,7 @@
 #define S2W_DEFAULT		0
 #define S2S_DEFAULT		0
 #define WG_PWRKEY_DUR           60
-#define EXP_KEYPAD_S2W
+//#define EXP_KEYPAD_S2W
 
 /* Lenovo A6020a46 */
 #ifdef EXP_KEYPAD_S2W
@@ -522,7 +522,7 @@ static void wg_input_event(struct input_handle *handle, unsigned int type,
 		if ((value == S2W_KEY_LEFT) || (value == S2W_KEY_CENTER) || (value == S2W_KEY_RIGHT)) {
 			if (x_pre == 0) {
 				if ((value == S2W_KEY_LEFT) || (value == S2W_KEY_RIGHT)) {
-					if (is_suspended()) {
+					if (scr_suspended) {
 						if (value == S2W_KEY_LEFT) {
 							x_pre = value;
 						}
@@ -540,12 +540,12 @@ static void wg_input_event(struct input_handle *handle, unsigned int type,
 					if (x_pre == S2W_KEY_CENTER) {
 						if (touch_x == S2W_KEY_LEFT)
 							if (value == S2W_KEY_RIGHT)
-								if (is_suspended())
+								if (scr_suspended)
 									sweep2wake_reset();
 
 						if (touch_x == S2W_KEY_RIGHT)
 							if (value == S2W_KEY_LEFT)
-								if (!is_suspended())
+								if (!scr_suspended)
 									sweep2wake_reset();
 					}
 				}
