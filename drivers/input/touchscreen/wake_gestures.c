@@ -43,9 +43,14 @@
 #define S2W_DEFAULT		0
 #define S2S_DEFAULT		0
 #define WG_PWRKEY_DUR           60
+#define EXP_KEYPAD_S2W
 
-/* Redmi Note 3 */
+/* Lenovo A6020a46 */
+#ifdef EXP_KEYPAD_S2W
+#define SWEEP_Y_MAX             2100
+#else
 #define SWEEP_Y_MAX             1920
+#endif
 #define SWEEP_X_MAX             1080
 #define SWEEP_EDGE		90
 #define SWEEP_Y_LIMIT           SWEEP_Y_MAX-SWEEP_EDGE
@@ -58,6 +63,10 @@
 #define SWEEP_Y_NEXT            135
 #define DT2W_FEATHER		150
 #define DT2W_TIME 		500
+
+#define S2W_KEY_LEFT			180
+#define S2W_KEY_CENTER			540
+#define S2W_KEY_RIGHT			900
 
 /* Wake Gestures */
 #define SWEEP_TIMEOUT		300
@@ -97,6 +106,9 @@ static unsigned long firstx_time = 0, firsty_time = 0;
 static unsigned long pwrtrigger_time[2] = {0, 0};
 static unsigned long long tap_time_pre = 0;
 static int touch_nr = 0, x_pre = 0, y_pre = 0;
+#ifdef EXP_KEYPAD_S2W
+int s2w_keypad_swipe_length = 3;
+#endif
 static bool touch_cnt = true;
 static int vib_strength = VIB_STRENGTH;
 
@@ -346,6 +358,48 @@ static void detect_sweep2wake_h(int x, int y, bool st, bool scr_suspended)
         pr_info(LOGTAG"s2w Horz x,y(%4d,%4d) wake:%s\n",
                 x, y, (scr_suspended) ? "true" : "false");
 #endif
+#ifdef EXP_KEYPAD_S2W
+	if (x_pre) {
+		if (s2w_keypad_swipe_length == 2) {
+			if (x == S2W_KEY_CENTER) {
+				if (x_pre == S2W_KEY_LEFT) {
+					if (scr_suspended) {
+#if WG_DEBUG
+						pr_info(LOGTAG"LTR: keypad: ON\n");
+#endif
+						wake_pwrtrigger();
+					}
+				} else if (x_pre == S2W_KEY_RIGHT) {
+					if (!scr_suspended) {
+#if WG_DEBUG
+						pr_info(LOGTAG"RTL: keypad: OFF\n");
+#endif
+						wake_pwrtrigger();
+					}
+				}
+			}
+		} else if (s2w_keypad_swipe_length == 3) {
+			if (x_pre == S2W_KEY_CENTER) {
+				if (x == S2W_KEY_LEFT) {
+					if (!scr_suspended) {
+#if WG_DEBUG
+						pr_info(LOGTAG"RTL: keypad: OFF\n");
+#endif
+						wake_pwrtrigger();
+					}
+				} else if (x == S2W_KEY_RIGHT) {
+					if (scr_suspended) {
+#if WG_DEBUG
+						pr_info(LOGTAG"LTR: keypad: ON\n");
+#endif
+						wake_pwrtrigger();
+					}
+				}
+			}
+		}
+		return;
+	}
+#endif // EXP_KEYPAD_S2W
 	//left->right
 	if (firstx < SWEEP_X_START && single_touch &&
 			((scr_suspended && (s2w_switch & SWEEP_RIGHT)) ||
@@ -454,6 +508,9 @@ static void wg_input_event(struct input_handle *handle, unsigned int type,
 	}
 
 	if (code == ABS_MT_TRACKING_ID && value == -1) {
+#ifdef EXP_KEYPAD_S2W
+		if (x_pre == 0)
+#endif
 		sweep2wake_reset();
 		touch_cnt = true;
 		queue_work_on(0, dt2w_input_wq, &dt2w_input_work);
@@ -461,16 +518,61 @@ static void wg_input_event(struct input_handle *handle, unsigned int type,
 	}
 
 	if (code == ABS_MT_POSITION_X) {
+#ifdef EXP_KEYPAD_S2W
+		if ((value == S2W_KEY_LEFT) || (value == S2W_KEY_CENTER) || (value == S2W_KEY_RIGHT)) {
+			if (x_pre == 0) {
+				if ((value == S2W_KEY_LEFT) || (value == S2W_KEY_RIGHT)) {
+					if (is_suspended()) {
+						if (value == S2W_KEY_LEFT) {
+							x_pre = value;
+						}
+					} else {
+						if (value == S2W_KEY_RIGHT) {
+							x_pre = value;
+						}
+					}
+				}
+			} else {
+				if (s2w_keypad_swipe_length == 3) {
+					if (value == S2W_KEY_CENTER)
+						x_pre = value;
+
+					if (x_pre == S2W_KEY_CENTER) {
+						if (touch_x == S2W_KEY_LEFT)
+							if (value == S2W_KEY_RIGHT)
+								if (is_suspended())
+									sweep2wake_reset();
+
+						if (touch_x == S2W_KEY_RIGHT)
+							if (value == S2W_KEY_LEFT)
+								if (!is_suspended())
+									sweep2wake_reset();
+					}
+				}
+			}
+		}
+#endif // EXP_KEYPAD_S2W
 		touch_x = value;
 		touch_x_called = true;
 	}
 
 	if (code == ABS_MT_POSITION_Y) {
 		touch_y = value;
+#ifdef EXP_KEYPAD_S2W
+		if (x_pre) {
+			if (value < SWEEP_Y_MAX) {
+				x_pre = 0;
+			}
+		}
+#endif
 		touch_y_called = true;
 	}
 
+#ifdef EXP_KEYPAD_S2W
+	if (touch_x_called && (x_pre ? true : (touch_y_called ? true : false))) {
+#else
 	if (touch_x_called && touch_y_called) {
+#endif // EXP_KEYPAD_S2W
 		touch_x_called = false;
 		touch_y_called = false;
 		queue_work_on(0, s2w_input_wq, &s2w_input_work);
@@ -545,6 +647,31 @@ static struct input_handler wg_input_handler = {
 /*
  * SYSFS stuff below here
  */
+#ifdef EXP_KEYPAD_S2W
+static ssize_t s2w_sweep2wake_touchkey_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+
+	count += sprintf(buf, "%d\n", s2w_keypad_swipe_length);
+
+	return count;
+}
+
+static ssize_t s2w_sweep2wake_touchkey_dump(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	if (buf[0] >= '1' && buf[0] <= '4' && buf[1] == '\n')
+		if (s2w_keypad_swipe_length != buf[0] - '0')
+			s2w_keypad_swipe_length = buf[0] - '0';
+
+	return count;
+}
+
+static DEVICE_ATTR(sweep2wake_touchkey, (S_IWUSR|S_IRUGO),
+	s2w_sweep2wake_touchkey_show, s2w_sweep2wake_touchkey_dump);
+#endif // EXP_KEYPAD_S2W
+
 static ssize_t sweep2wake_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -732,6 +859,12 @@ static int __init wake_gestures_init(void)
 	if (android_touch_kobj == NULL) {
 		pr_warn("%s: android_touch_kobj create_and_add failed\n", __func__);
 	}
+#ifdef EXP_KEYPAD_S2W
+	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake_touchkey.attr);
+	if (rc) {
+		pr_warn("%s: sysfs_create_file failed for sweep2wake_touchkey\n", __func__);
+	}
+#endif // EXP_KEYPAD_S2W
 	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake.attr);
 	if (rc) {
 		pr_warn("%s: sysfs_create_file failed for sweep2wake\n", __func__);
