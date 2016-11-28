@@ -89,7 +89,15 @@ static struct input_dev *gesture_dev;
 
 /* Resources */
 int s2w_switch = S2W_DEFAULT;
-int s2w_switch_temp; 
+int s2w_switch_temp;
+int s2w_switch_right = S2W_DEFAULT;
+int s2w_switch_right_temp;
+int s2w_switch_left = S2W_DEFAULT;
+int s2w_switch_left_temp;
+int s2w_switch_up = S2W_DEFAULT;
+int s2w_switch_up_temp;
+int s2w_switch_down = S2W_DEFAULT;
+int s2w_switch_down_temp;
 bool s2w_switch_changed = false;
 int dt2w_switch = DT2W_DEFAULT;
 int dt2w_switch_temp; 
@@ -643,6 +651,42 @@ static struct input_handler wg_input_handler = {
 	.id_table	= wg_ids,
 };
 
+int s2w_switch_set(int s2w_switch_right, int s2w_switch_left, int s2w_switch_up, int s2w_switch_down) {
+	if ((s2w_switch_right == 0) && (s2w_switch_left == 0) && (s2w_switch_up == 0) && (s2w_switch_down == 0)) {
+		s2w_switch = 0;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 0) && (s2w_switch_up == 0) && (s2w_switch_down == 0)) {
+		s2w_switch = 1;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 1) && (s2w_switch_up == 0) && (s2w_switch_down == 0)) {
+		s2w_switch = 2;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 1) && (s2w_switch_up == 0) && (s2w_switch_down == 0)) {
+		s2w_switch = 3;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 0) && (s2w_switch_up == 1) && (s2w_switch_down == 0)) {
+		s2w_switch = 4;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 0) && (s2w_switch_up == 1) && (s2w_switch_down == 0)) {
+		s2w_switch = 5;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 1) && (s2w_switch_up == 1) && (s2w_switch_down == 0)) {
+		s2w_switch = 6;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 1) && (s2w_switch_up == 1) && (s2w_switch_down == 0)) {
+		s2w_switch = 7;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 0) && (s2w_switch_up == 0) && (s2w_switch_down == 1)) {
+		s2w_switch = 8;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 0) && (s2w_switch_up == 0) && (s2w_switch_down == 1)) {
+		s2w_switch = 9;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 1) && (s2w_switch_up == 0) && (s2w_switch_down == 1)) {
+		s2w_switch = 10;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 1) && (s2w_switch_up == 0) && (s2w_switch_down == 1)) {
+		s2w_switch = 11;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 0) && (s2w_switch_up == 1) && (s2w_switch_down == 1)) {
+		s2w_switch = 12;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 0) && (s2w_switch_up == 1) && (s2w_switch_down == 1)) {
+		s2w_switch = 13;
+	} else if ((s2w_switch_right == 0) && (s2w_switch_left == 1) && (s2w_switch_up == 1) && (s2w_switch_down == 1)) {
+		s2w_switch = 14;
+	} else if ((s2w_switch_right == 1) && (s2w_switch_left == 1) && (s2w_switch_up == 1) && (s2w_switch_down == 1)) {
+		s2w_switch = 15;
+	}
+	return s2w_switch;
+}
 
 /*
  * SYSFS stuff below here
@@ -672,6 +716,8 @@ static DEVICE_ATTR(sweep2wake_touchkey, (S_IWUSR|S_IRUGO),
 	s2w_sweep2wake_touchkey_show, s2w_sweep2wake_touchkey_dump);
 #endif // EXP_KEYPAD_S2W
 
+/*****************************************************************/
+
 static ssize_t sweep2wake_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -700,6 +746,128 @@ static ssize_t sweep2wake_dump(struct device *dev,
 static DEVICE_ATTR(sweep2wake, (S_IWUSR|S_IRUGO),
 	sweep2wake_show, sweep2wake_dump);
 
+/*****************************************************************/
+
+static ssize_t sweep2wake_right_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+
+	count += sprintf(buf, "%d\n", s2w_switch_right);
+
+	return count;
+}
+
+static ssize_t sweep2wake_right_dump(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	sscanf(buf, "%d ", &s2w_switch_right_temp);
+	if (s2w_switch_right_temp < 0 || s2w_switch_right_temp > 1)
+		s2w_switch_right_temp = 0;
+		
+	if (!is_suspended())
+		s2w_switch = s2w_switch_set(s2w_switch_right_temp, s2w_switch_left, s2w_switch_up, s2w_switch_down);
+	else
+		s2w_switch_changed = true;
+
+	return count;
+}
+
+static DEVICE_ATTR(sweep2wake_right, (S_IWUSR|S_IRUGO),
+	sweep2wake_right_show, sweep2wake_right_dump);
+
+/*****************************************************************/
+
+static ssize_t sweep2wake_left_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+
+	count += sprintf(buf, "%d\n", s2w_switch_left);
+
+	return count;
+}
+
+static ssize_t sweep2wake_left_dump(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	sscanf(buf, "%d ", &s2w_switch_left_temp);
+	if (s2w_switch_left_temp < 0 || s2w_switch_left_temp > 1)
+		s2w_switch_left_temp = 0;
+		
+	if (!is_suspended())
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left_temp, s2w_switch_up, s2w_switch_down);
+	else
+		s2w_switch_changed = true;
+
+	return count;
+}
+
+static DEVICE_ATTR(sweep2wake_left, (S_IWUSR|S_IRUGO),
+	sweep2wake_left_show, sweep2wake_left_dump);
+
+/*****************************************************************/
+
+static ssize_t sweep2wake_up_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+
+	count += sprintf(buf, "%d\n", s2w_switch_up);
+
+	return count;
+}
+
+static ssize_t sweep2wake_up_dump(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	sscanf(buf, "%d ", &s2w_switch_up_temp);
+	if (s2w_switch_up_temp < 0 || s2w_switch_up_temp > 1)
+		s2w_switch_up_temp = 0;
+		
+	if (!is_suspended())
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up_temp, s2w_switch_down);
+	else
+		s2w_switch_changed = true;
+
+	return count;
+}
+
+static DEVICE_ATTR(sweep2wake_up, (S_IWUSR|S_IRUGO),
+	sweep2wake_up_show, sweep2wake_up_dump);
+
+/*****************************************************************/
+
+static ssize_t sweep2wake_down_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+
+	count += sprintf(buf, "%d\n", s2w_switch_down);
+
+	return count;
+}
+
+static ssize_t sweep2wake_down_dump(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	sscanf(buf, "%d ", &s2w_switch_down_temp);
+	if (s2w_switch_down_temp < 0 || s2w_switch_down_temp > 1)
+		s2w_switch_down_temp = 0;
+		
+	if (!is_suspended())
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up, s2w_switch_down_temp);
+	else
+		s2w_switch_changed = true;
+
+	return count;
+}
+
+static DEVICE_ATTR(sweep2wake_down, (S_IWUSR|S_IRUGO),
+	sweep2wake_down_show, sweep2wake_down_dump);
+
+/*****************************************************************/
+
 static ssize_t sweep2sleep_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -720,6 +888,8 @@ static ssize_t sweep2sleep_dump(struct device *dev,
 
 static DEVICE_ATTR(sweep2sleep, (S_IWUSR|S_IRUGO),
 	sweep2sleep_show, sweep2sleep_dump);
+
+/*****************************************************************/
 
 static ssize_t doubletap2wake_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -748,7 +918,9 @@ static ssize_t doubletap2wake_dump(struct device *dev,
 
 static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
 	doubletap2wake_show, doubletap2wake_dump);
-	
+
+/*****************************************************************/
+
 #if (WAKE_GESTURES_ENABLED)
 static ssize_t wake_gestures_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -769,6 +941,8 @@ static ssize_t wake_gestures_dump(struct device *dev,
 static DEVICE_ATTR(wake_gestures, (S_IWUSR|S_IRUGO),
 	wake_gestures_show, wake_gestures_dump);
 #endif	
+
+/*****************************************************************/
 
 static ssize_t vib_strength_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -868,6 +1042,22 @@ static int __init wake_gestures_init(void)
 	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake.attr);
 	if (rc) {
 		pr_warn("%s: sysfs_create_file failed for sweep2wake\n", __func__);
+	}
+	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake_right.attr);
+	if (rc) {
+		pr_warn("%s: sysfs_create_file failed for sweep2wake_right\n", __func__);
+	}
+	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake_left.attr);
+	if (rc) {
+		pr_warn("%s: sysfs_create_file failed for sweep2wake_left\n", __func__);
+	}
+	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake_up.attr);
+	if (rc) {
+		pr_warn("%s: sysfs_create_file failed for sweep2wake_up\n", __func__);
+	}
+	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake_down.attr);
+	if (rc) {
+		pr_warn("%s: sysfs_create_file failed for sweep2wake_down\n", __func__);
 	}
 	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2sleep.attr);
 	if (rc) {
