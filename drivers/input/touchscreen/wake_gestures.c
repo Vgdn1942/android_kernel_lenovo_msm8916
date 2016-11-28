@@ -477,8 +477,19 @@ static void detect_sweep2wake_h(int x, int y, bool st, bool scr_suspended)
 	}
 }
 
+int in_phone_call(void) {
+	return var_in_phone_call;
+}
+
 static void s2w_input_callback(struct work_struct *unused)
 {
+	if (in_phone_call()) {
+#if WG_DEBUG
+		pr_info("Sweep2Wake: in phone call! return!\n");
+#endif
+		return;
+	}
+
 	detect_sweep2wake_h(touch_x, touch_y, true, is_suspended());
 	if (is_suspended())
 		detect_sweep2wake_v(touch_x, touch_y, true);
@@ -488,6 +499,12 @@ static void s2w_input_callback(struct work_struct *unused)
 
 static void dt2w_input_callback(struct work_struct *unused)
 {
+	if (in_phone_call()) {
+#if WG_DEBUG
+		pr_info("DoubleTap2Wake: in phone call! return!\n");
+#endif
+		return;
+	}
 
 	if (is_suspended() && dt2w_switch)
 		detect_doubletap2wake(touch_x, touch_y, true);
