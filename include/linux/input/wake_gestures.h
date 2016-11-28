@@ -33,6 +33,6 @@ extern bool gestures_enabled;
 extern bool var_in_phone_call;
 bool scr_suspended(void);
 bool scr_suspended_ft(void);
-//void set_vibrate(int value);
+void set_vibrate(int value);
 
 #endif	/* _LINUX_WAKE_GESTURES_H */
