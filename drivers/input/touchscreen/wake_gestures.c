@@ -731,7 +731,7 @@ static ssize_t s2w_sweep2wake_touchkey_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake_touchkey, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2wake_touchkey, 0755,
 	s2w_sweep2wake_touchkey_show, s2w_sweep2wake_touchkey_dump);
 #endif // EXP_KEYPAD_S2W
 
@@ -762,7 +762,7 @@ static ssize_t sweep2wake_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2wake, 0755,
 	sweep2wake_show, sweep2wake_dump);
 
 /*****************************************************************/
@@ -794,7 +794,7 @@ static ssize_t sweep2wake_right_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake_right, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2wake_right, 0755,
 	sweep2wake_right_show, sweep2wake_right_dump);
 
 /*****************************************************************/
@@ -826,7 +826,7 @@ static ssize_t sweep2wake_left_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake_left, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2wake_left, 0755,
 	sweep2wake_left_show, sweep2wake_left_dump);
 
 /*****************************************************************/
@@ -858,7 +858,7 @@ static ssize_t sweep2wake_up_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake_up, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2wake_up, 0755,
 	sweep2wake_up_show, sweep2wake_up_dump);
 
 /*****************************************************************/
@@ -890,7 +890,7 @@ static ssize_t sweep2wake_down_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake_down, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2wake_down, 0755,
 	sweep2wake_down_show, sweep2wake_down_dump);
 
 /*****************************************************************/
@@ -913,7 +913,7 @@ static ssize_t sweep2sleep_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(sweep2sleep, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(sweep2sleep, 0755,
 	sweep2sleep_show, sweep2sleep_dump);
 
 /*****************************************************************/
@@ -943,7 +943,7 @@ static ssize_t doubletap2wake_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(doubletap2wake, 0755,
 	doubletap2wake_show, doubletap2wake_dump);
 
 /*****************************************************************/
@@ -965,7 +965,7 @@ static ssize_t wake_gestures_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(wake_gestures, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(wake_gestures, 0755,
 	wake_gestures_show, wake_gestures_dump);
 #endif	
 
@@ -989,7 +989,7 @@ static ssize_t vib_strength_dump(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(vib_strength, (S_IWUSR|S_IRUGO),
+static DEVICE_ATTR(vib_strength, 0755,
 	vib_strength_show, vib_strength_dump);
 
 
