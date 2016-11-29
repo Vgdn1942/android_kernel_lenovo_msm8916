@@ -1103,7 +1103,7 @@ static void _qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
 
 void qpnp_hap_td_enable(int value)
 {
-	_qpnp_hap_td_enable(&ghap->timed_dev, value);
+	_qpnp_hap_td_enable(&hap->timed_dev, value);
 }
 EXPORT_SYMBOL(qpnp_hap_td_enable);
 
