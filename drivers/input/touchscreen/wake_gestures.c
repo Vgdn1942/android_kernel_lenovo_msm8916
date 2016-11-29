@@ -127,11 +127,6 @@ static struct workqueue_struct *dt2w_input_wq;
 static struct work_struct s2w_input_work;
 static struct work_struct dt2w_input_work;
 
-// Vibrate when screen on
-#ifdef CONFIG_QPNP_HAPTIC
-extern void qpnp_hap_td_enable(int value);
-#endif
-
 static bool is_suspended(void)
 {
 		return scr_suspended_ft();
@@ -164,10 +159,6 @@ static void wake_presspwr(struct work_struct * wake_presspwr_work) {
 	input_event(wake_dev, EV_SYN, 0, 0);
 	msleep(WG_PWRKEY_DUR);
 	mutex_unlock(&pwrkeyworklock);
-
-#ifdef CONFIG_QPNP_HAPTIC
-	qpnp_hap_td_enable(vib_strength);
-#endif
 
 	return;
 }
