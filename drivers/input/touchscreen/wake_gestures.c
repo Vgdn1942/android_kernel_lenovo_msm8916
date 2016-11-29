@@ -780,10 +780,12 @@ static ssize_t sweep2wake_right_dump(struct device *dev,
 	if (s2w_switch_right_temp < 0 || s2w_switch_right_temp > 1)
 		s2w_switch_right_temp = 0;
 		
-	if (!is_suspended())
-		s2w_switch = s2w_switch_set(s2w_switch_right_temp, s2w_switch_left, s2w_switch_up, s2w_switch_down);
-	else
+	if (!is_suspended()) {
+		s2w_switch_right = s2w_switch_right_temp;
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up, s2w_switch_down);
+	} else {
 		s2w_switch_changed = true;
+	}
 
 	return count;
 }
@@ -810,10 +812,12 @@ static ssize_t sweep2wake_left_dump(struct device *dev,
 	if (s2w_switch_left_temp < 0 || s2w_switch_left_temp > 1)
 		s2w_switch_left_temp = 0;
 		
-	if (!is_suspended())
-		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left_temp, s2w_switch_up, s2w_switch_down);
-	else
+	if (!is_suspended()) {
+		s2w_switch_left = s2w_switch_left_temp;
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up, s2w_switch_down);
+	} else {
 		s2w_switch_changed = true;
+	}
 
 	return count;
 }
@@ -840,10 +844,12 @@ static ssize_t sweep2wake_up_dump(struct device *dev,
 	if (s2w_switch_up_temp < 0 || s2w_switch_up_temp > 1)
 		s2w_switch_up_temp = 0;
 		
-	if (!is_suspended())
-		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up_temp, s2w_switch_down);
-	else
+	if (!is_suspended()) {
+		s2w_switch_up = s2w_switch_up_temp;
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up, s2w_switch_down);
+	} else {
 		s2w_switch_changed = true;
+	}
 
 	return count;
 }
@@ -870,10 +876,12 @@ static ssize_t sweep2wake_down_dump(struct device *dev,
 	if (s2w_switch_down_temp < 0 || s2w_switch_down_temp > 1)
 		s2w_switch_down_temp = 0;
 		
-	if (!is_suspended())
-		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up, s2w_switch_down_temp);
-	else
+	if (!is_suspended()) {
+		s2w_switch_down = s2w_switch_down_temp;
+		s2w_switch = s2w_switch_set(s2w_switch_right, s2w_switch_left, s2w_switch_up, s2w_switch_down);
+	} else {
 		s2w_switch_changed = true;
+	}
 
 	return count;
 }
