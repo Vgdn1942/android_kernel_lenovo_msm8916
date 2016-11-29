@@ -76,7 +76,7 @@
 #define SWEEP_LEFT		0x02
 #define SWEEP_UP		0x04
 #define SWEEP_DOWN		0x08
-#define VIB_STRENGTH 		30
+#define VIB_STRENGTH 		50
 
 #define WAKE_GESTURES_ENABLED	1
 
@@ -127,6 +127,8 @@ static struct workqueue_struct *dt2w_input_wq;
 static struct work_struct s2w_input_work;
 static struct work_struct dt2w_input_work;
 
+extern void qpnp_kernel_vib_enable(int value);
+
 static bool is_suspended(void)
 {
 		return scr_suspended_ft();
@@ -159,6 +161,8 @@ static void wake_presspwr(struct work_struct * wake_presspwr_work) {
 	input_event(wake_dev, EV_SYN, 0, 0);
 	msleep(WG_PWRKEY_DUR);
 	mutex_unlock(&pwrkeyworklock);
+
+	qpnp_kernel_vib_enable(vib_strength);
 
 	return;
 }
@@ -980,7 +984,7 @@ static ssize_t vib_strength_dump(struct device *dev,
 {
 	sscanf(buf, "%d ",&vib_strength);
 	if (vib_strength < 0 || vib_strength > 90)
-		vib_strength = 20;
+		vib_strength = 50;
 
 	return count;
 }
