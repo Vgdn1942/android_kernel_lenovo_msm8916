@@ -1079,7 +1079,7 @@ static int qpnp_hap_set(struct qpnp_hap *hap, int on)
 }
 
 /* enable interface from timed output class */
-static void qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
+static void _qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
 {
 	struct qpnp_hap *hap = container_of(dev, struct qpnp_hap,
 					 timed_dev);
@@ -1100,6 +1100,12 @@ static void qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
 	mutex_unlock(&hap->lock);
 	schedule_work(&hap->work);
 }
+
+void qpnp_hap_td_enable(int value)
+{
+	_qpnp_hap_td_enable(&ghap->timed_dev, value);
+}
+EXPORT_SYMBOL(qpnp_hap_td_enable);
 
 /* worker to opeate haptics */
 static void qpnp_hap_worker(struct work_struct *work)
@@ -1597,7 +1603,7 @@ static int qpnp_haptic_probe(struct spmi_device *spmi)
 
 	hap->timed_dev.name = "vibrator";
 	hap->timed_dev.get_time = qpnp_hap_get_time;
-	hap->timed_dev.enable = qpnp_hap_td_enable;
+	hap->timed_dev.enable = _qpnp_hap_td_enable;
 
 	rc = timed_output_dev_register(&hap->timed_dev);
 	if (rc < 0) {
