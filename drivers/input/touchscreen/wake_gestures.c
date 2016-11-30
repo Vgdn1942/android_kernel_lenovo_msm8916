@@ -32,6 +32,9 @@
 #include <linux/input.h>
 #include <linux/hrtimer.h>
 #include <asm-generic/cputime.h>
+
+#include <linux/input/ft5x06_ts.h>
+
 /*
 #include <linux/wakelock.h>
 */
@@ -979,7 +982,7 @@ static ssize_t vib_strength_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	size_t count = 0;
-	count += sprintf(buf, "%d\n", vib_strength);
+	count += sprintf(buf, "%d\n", tp_psensor_data);
 	return count;
 }
 
