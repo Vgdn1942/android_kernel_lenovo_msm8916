@@ -76,6 +76,7 @@
 #define SWEEP_LEFT		0x02
 #define SWEEP_UP		0x04
 #define SWEEP_DOWN		0x08
+#define VIB_ENABLE 		1
 #define VIB_STRENGTH 		50
 
 #define WAKE_GESTURES_ENABLED	1
@@ -119,6 +120,7 @@ int s2w_keypad_swipe_length = 3;
 #endif
 static bool touch_cnt = true;
 static int vib_strength = VIB_STRENGTH;
+static int vib_enable = VIB_ENABLE;
 
 static struct input_dev * wake_dev;
 static DEFINE_MUTEX(pwrkeyworklock);
@@ -162,7 +164,9 @@ static void wake_presspwr(struct work_struct * wake_presspwr_work) {
 	msleep(WG_PWRKEY_DUR);
 	mutex_unlock(&pwrkeyworklock);
 
-	qpnp_kernel_vib_enable(vib_strength);
+	if (vib_enable == 1) {
+		qpnp_kernel_vib_enable(vib_strength);
+	}
 
 	return;
 }
@@ -992,6 +996,28 @@ static ssize_t vib_strength_dump(struct device *dev,
 static DEVICE_ATTR(vib_strength, 0755,
 	vib_strength_show, vib_strength_dump);
 
+/*****************************************************************/
+
+static ssize_t vib_enable_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", vib_enable);
+	return count;
+}
+
+static ssize_t vib_enable_dump(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	sscanf(buf, "%d ",&vib_enable);
+	if (vib_enable < 0 || vib_enable > 1)
+		vib_enable = 1;
+
+	return count;
+}
+
+static DEVICE_ATTR(vib_enable, 0755,
+	vib_enable_show, vib_enable_dump);
 
 /*
  * INIT / EXIT stuff below here
@@ -1097,6 +1123,10 @@ static int __init wake_gestures_init(void)
 	rc = sysfs_create_file(android_touch_kobj, &dev_attr_vib_strength.attr);
 	if (rc) {
 		pr_warn("%s: sysfs_create_file failed for vib_strength\n", __func__);
+	}
+	rc = sysfs_create_file(android_touch_kobj, &dev_attr_vib_enable.attr);
+	if (rc) {
+		pr_warn("%s: sysfs_create_file failed for vib_enable\n", __func__);
 	}
 #if (WAKE_GESTURES_ENABLED)
 	rc = sysfs_create_file(android_touch_kobj, &dev_attr_wake_gestures.attr);
