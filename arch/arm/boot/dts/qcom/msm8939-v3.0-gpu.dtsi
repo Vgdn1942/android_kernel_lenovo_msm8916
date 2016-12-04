@@ -100,7 +100,7 @@
 		coresight-child-ports = <4>;
 
 		/* CPU latency parameter */
-		qcom,pm-qos-active-latency = <601>;
+		qcom,pm-qos-active-latency = <401>;
 		qcom,pm-qos-wakeup-latency = <401>;
 
 		/* Power levels */
@@ -112,13 +112,13 @@
 
 			qcom,gpu-pwrlevel@0 {
 				reg = <0>;
-				qcom,gpu-freq = <1050000000>;
+				qcom,gpu-freq = <1250000000>;
 				qcom,bus-freq = <4>;
 			};
 
 			qcom,gpu-pwrlevel@1 {
 				reg = <1>;
-				qcom,gpu-freq = <485000000>;
+				qcom,gpu-freq = <450000000>;
 				qcom,bus-freq = <3>;
 			};
 
@@ -130,7 +130,7 @@
 
 			qcom,gpu-pwrlevel@3 {
 				reg = <3>;
-				qcom,gpu-freq = <50000000>;
+				qcom,gpu-freq = <100000000>;
 				qcom,bus-freq = <1>;
 			};
 
