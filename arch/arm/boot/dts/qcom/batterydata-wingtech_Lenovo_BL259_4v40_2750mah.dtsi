@@ -13,10 +13,10 @@
 
 qcom,wingtech_Lenovo_BL259_4v40_2750mah-data {
 	qcom,default-rbatt-mohm = <140>;
-	qcom,max-voltage-uv = <4425000>;
+	qcom,max-voltage-uv = <4450000>;
 	qcom,fcc-mah = <2750>;
 	qcom,rbatt-capacitive-mohm = <0>;
-	qcom,v-cutoff-uv = <3400000>;
+	qcom,v-cutoff-uv = <3300000>;
 	qcom,chg-term-ua = <100000>;
 	qcom,batt-id-kohm = <110>;
 	qcom,flat-ocv-threshold-uv = <3800000>;
