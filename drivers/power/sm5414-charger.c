@@ -275,6 +275,7 @@
 #define VBUSLIMIT_2150mA     40
 #define VBUSLIMIT_2200mA     41
 #define VBUSLIMIT_2350mA     42
+#define VBUSLIMIT_2400mA     43
 
 // AICL TH
 #define AICL_THRESHOLD_4_3_V         0
@@ -316,6 +317,8 @@
 #define BATREG_4_4_2_5_V    13
 #define BATREG_4_4_5_0_V    14
 #define BATREG_4_4_7_5_V    15
+#define BATREG_4_5_0_0_V    16
+#define BATREG_4_5_2_5_V    17
 #define BATREG_MASK       0x0F
 
 // Weak Battery Voltage
@@ -657,7 +660,7 @@ static int sm5414_fastchg_current_set(struct sm5414_charger *chip,
 }
 
 #define MIN_FLOAT_MV        4100
-#define MAX_FLOAT_MV        4475
+#define MAX_FLOAT_MV        4525
 #define VFLOAT_STEP_MV      25
 //BATREG
 static int sm5414_float_voltage_set(struct sm5414_charger *chip, int vfloat_mv)
