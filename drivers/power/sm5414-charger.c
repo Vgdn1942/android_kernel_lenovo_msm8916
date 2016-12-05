@@ -38,8 +38,8 @@
 #define AC_CHG_CURRENT_SHIFT        4
 #define SM5414_IRQ_REG_COUNT        6
 #define SM5414_FAST_CHG_MIN_MA      100
-#define SM5414_FAST_CHG_MAX_MA      2500
-#define SM5414_DEFAULT_BATT_CAPACITY    50
+#define SM5414_FAST_CHG_MAX_MA      2200
+#define SM5414_DEFAULT_BATT_CAPACITY    65
 #define SM5414_BATT_GOOD_THRE_2P5   0x1
 
 /* 
@@ -228,8 +228,6 @@
 #define FASTCHG_2300mA     44
 #define FASTCHG_2350mA     45
 #define FASTCHG_2400mA     46
-#define FASTCHG_2450mA     47
-#define FASTCHG_2500mA     48
 
 // Input current Limit
 #define VBUSLIMIT_100mA       0
@@ -274,8 +272,6 @@
 #define VBUSLIMIT_2100mA     39
 #define VBUSLIMIT_2150mA     40
 #define VBUSLIMIT_2200mA     41
-#define VBUSLIMIT_2350mA     42
-#define VBUSLIMIT_2400mA     43
 
 // AICL TH
 #define AICL_THRESHOLD_4_3_V         0
@@ -316,9 +312,6 @@
 #define BATREG_4_4_0_0_V    12
 #define BATREG_4_4_2_5_V    13
 #define BATREG_4_4_5_0_V    14
-#define BATREG_4_4_7_5_V    15
-#define BATREG_4_5_0_0_V    16
-#define BATREG_4_5_2_5_V    17
 #define BATREG_MASK       0x0F
 
 // Weak Battery Voltage
@@ -660,7 +653,7 @@ static int sm5414_fastchg_current_set(struct sm5414_charger *chip,
 }
 
 #define MIN_FLOAT_MV        4100
-#define MAX_FLOAT_MV        4525
+#define MAX_FLOAT_MV        4450
 #define VFLOAT_STEP_MV      25
 //BATREG
 static int sm5414_float_voltage_set(struct sm5414_charger *chip, int vfloat_mv)
@@ -2051,7 +2044,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
             
-            sm5414_set_usb_chg_current(chip, 2350);
+            sm5414_set_usb_chg_current(chip, 2150);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
