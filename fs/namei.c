@@ -1983,8 +1983,6 @@ static int path_lookupat(int dfd, const char *name,
 		}
 	}
  out:
-
-out:
 	if (base)
 		fput(base);
 
