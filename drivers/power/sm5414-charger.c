@@ -31,9 +31,9 @@
 
  /* constants */
 #define USB2_MIN_CURRENT_MA     100
-#define USB2_MAX_CURRENT_MA     450
+#define USB2_MAX_CURRENT_MA     550
 #define USB3_MIN_CURRENT_MA     150
-#define USB3_MAX_CURRENT_MA     850
+#define USB3_MAX_CURRENT_MA     900
 #define AC_CHG_CURRENT_MASK     0x70
 #define AC_CHG_CURRENT_SHIFT        4
 #define SM5414_IRQ_REG_COUNT        6
@@ -1175,11 +1175,11 @@ static int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
         /* USB 2.0 - 100mA */
         i = VBUSLIMIT_100mA;
     } else if (current_ma == USB2_MAX_CURRENT_MA) {
-        /* USB 2.0 - 450mA */
-        i = VBUSLIMIT_450mA;
+        /* USB 2.0 - 550mA */
+        i = VBUSLIMIT_550mA;
     } else if (current_ma == USB3_MAX_CURRENT_MA) {
-        /* USB 3.0 - 850mA */
-        i = VBUSLIMIT_850mA;
+        /* USB 3.0 - 900mA */
+        i = VBUSLIMIT_900mA;
     } else if (current_ma > USB2_MAX_CURRENT_MA) {
         /* HC mode  - if none of the above */
 
@@ -2034,7 +2034,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
 
-            sm5414_set_usb_chg_current(chip, 450);
+            sm5414_set_usb_chg_current(chip, 550);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
@@ -2053,7 +2053,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
             
-            sm5414_set_usb_chg_current(chip, 2150);
+            sm5414_set_usb_chg_current(chip, 2350);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
