@@ -47,16 +47,7 @@ core-$(CONFIG_XEN)		+= arch/arm64/xen/
 core-$(CONFIG_KVM) += arch/arm64/kvm/
 core-$(CONFIG_CRYPTO) += arch/arm64/crypto/
 core-$(CONFIG_ALUCARD_HOTPLUG)	+= arch/arm64/hotplug/ALUCARD/
-<<<<<<< HEAD
-=======
-core-$(CONFIG_BRICKED_HOTPLUG)	+= arch/arm64/hotplug/BRICKED/
-core-$(CONFIG_MSM_HOTPLUG)	+= arch/arm64/hotplug/MSMHOTPLUG/
 core-$(CONFIG_MSM_SLEEPER)	+= arch/arm64/hotplug/MSMSLEEPER/
-core-$(CONFIG_THUNDERPLUG_CONTROL)	+= arch/arm64/hotplug/THUNDERPLUG/
-core-$(CONFIG_MAKO_HOTPLUG)	+= arch/arm64/hotplug/MAKO/
-core-$(CONFIG_ZEN_DECISION)	+= arch/arm64/hotplug/ZENDECISION/
-core-$(CONFIG_ASMP)	+= arch/arm64/hotplug/AUTOSMP/
->>>>>>> f8d711f... Added Hotplugs autosmp zendecision. etc.. and disabled bricked and alucard
 libs-y		:= arch/arm64/lib/ $(libs-y)
 libs-y		+= $(LIBGCC)
 

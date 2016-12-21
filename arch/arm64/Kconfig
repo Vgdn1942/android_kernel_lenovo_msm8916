@@ -707,13 +707,3 @@ source "arch/arm64/mm/Kconfig"
 
 source "arch/arm64/hotplug/ALUCARD/Kconfig"
 
-<<<<<<< HEAD
-=======
-source "arch/arm64/hotplug/THUNDERPLUG/Kconfig"
-
-source "arch/arm64/hotplug/ZENDECISION/Kconfig"
-
-source "arch/arm64/hotplug/AUTOSMP/Kconfig"
-
-source "arch/arm64/hotplug/MAKO/Kconfig"
->>>>>>> f8d711f... Added Hotplugs autosmp zendecision. etc.. and disabled bricked and alucard
