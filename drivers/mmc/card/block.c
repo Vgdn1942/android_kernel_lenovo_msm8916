@@ -1742,10 +1742,7 @@ static int mmc_blk_update_interrupted_req(struct mmc_card *card,
 {
 	int ret = MMC_BLK_SUCCESS;
 	u8 *ext_csd;
-<<<<<<< HEAD
-=======
-	int retry, status = 0, err;
->>>>>>> 4cbe44b... O3 - thanks to sultanqasim
+	int retry, status = 0;
 	int correctly_done;
 	struct mmc_queue_req *mq_rq = container_of(areq, struct mmc_queue_req,
 				      mmc_active);
