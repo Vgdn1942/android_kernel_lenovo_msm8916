@@ -998,20 +998,6 @@ static int msm_ds2_dap_handle_bypass(struct dolby_param_data *dolby_data)
 							copp_idx, rc);
 					}
 				}
-				/* Turn on qti modules */
-				for (j = 1; j < mod_list[0]; j++) {
-					if (!msm_ds2_dap_can_enable_module(
-						mod_list[j]) ||
-						mod_list[j] ==
-						DS2_MODULE_ID)
-						continue;
-					pr_debug("%s: param enable %d\n",
-						__func__, mod_list[j]);
-					adm_param_enable(port_id, copp_idx,
-							 mod_list[j],
-							 MODULE_ENABLE);
-				}
-
 				/* Add adm api to resend calibration on port */
 				rc = msm_ds2_dap_send_cal_data(i);
 				if (rc < 0) {
@@ -1537,14 +1523,9 @@ static int msm_ds2_dap_get_param(u32 cmd, void *arg)
 	}
 
 	/* Return if invalid length */
-<<<<<<< HEAD
 	if ((dolby_data->length >
 	      (DOLBY_MAX_LENGTH_INDIVIDUAL_PARAM - DOLBY_PARAM_PAYLOAD_SIZE)) ||
 	      (dolby_data->length <= 0)) {
-=======
-	if (dolby_data->length >
-	       (DOLBY_MAX_LENGTH_INDIVIDUAL_PARAM - DOLBY_PARAM_PAYLOAD_SIZE)) {
->>>>>>> b4b2f5c... ASoC: msm: qdsp6v2: DAP: Add check to validate data length
 		pr_err("Invalid length %d", dolby_data->length);
 		rc = -EINVAL;
 		goto end;
@@ -2284,3 +2265,4 @@ int msm_ds2_dap_ioctl_shared(struct snd_hwdep *hw, struct file *file,
 	return 0;
 }
 #endif /*CONFIG_DOLBY_DS2*/
+

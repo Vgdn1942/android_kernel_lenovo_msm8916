@@ -1,9 +1,6 @@
 /*
-<<<<<<< HEAD
  * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
-=======
  * Copyright (c) 2013-2016, The Linux Foundation. All rights reserved.
->>>>>>> d048365... qseecom: support whitelist memory for qseecom_send_modfd_cmd
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -64,15 +61,12 @@ enum qseecom_qceos_cmd_id {
 	QSEOS_TEE_OPEN_SESSION,
 	QSEOS_TEE_INVOKE_COMMAND,
 	QSEOS_TEE_CLOSE_SESSION,
-<<<<<<< HEAD
-=======
 	QSEOS_TEE_REQUEST_CANCELLATION,
 	QSEOS_FSM_LTEOTA_REQ_CMD = 0x109,
 	QSEOS_FSM_LTEOTA_REQ_RSP_CMD = 0x110,
 	QSEOS_FSM_IKE_REQ_CMD = 0x203,
 	QSEOS_FSM_IKE_REQ_RSP_CMD = 0x204,
 	QSEOS_CONTINUE_BLOCKED_REQ_COMMAND,
->>>>>>> d048365... qseecom: support whitelist memory for qseecom_send_modfd_cmd
 	QSEOS_FSM_LTE_INIT_DB = 0x100,
 	QSEOS_FSM_LTE_STORE_KENB = 0x101,
 	QSEOS_FSM_LTE_GEN_KEYS = 0x102,
@@ -85,12 +79,9 @@ enum qseecom_qceos_cmd_id {
 	QSEOS_FSM_IKE_CMD_SIGN = 0x200,
 	QSEOS_FSM_IKE_CMD_PROV_KEY = 0x201,
 	QSEOS_FSM_IKE_CMD_ENCRYPT_PRIVATE_KEY = 0x202,
-<<<<<<< HEAD
-=======
 	QSEOS_CLIENT_SEND_DATA_COMMAND_WHITELIST = 0x1C,
 	QSEOS_TEE_OPEN_SESSION_WHITELIST = 0x1D,
 	QSEOS_TEE_INVOKE_COMMAND_WHITELIST = 0x1E,
->>>>>>> d048365... qseecom: support whitelist memory for qseecom_send_modfd_cmd
 	QSEOS_FSM_OEM_FUSE_WRITE_ROW = 0x301,
 	QSEOS_FSM_OEM_FUSE_READ_ROW = 0x302,
 	QSEOS_CMD_MAX     = 0xEFFFFFFF
@@ -167,8 +158,6 @@ __packed struct qseecom_client_send_data_ireq {
 	uint32_t sglistinfo_len;
 };
 
-<<<<<<< HEAD
-=======
 __packed struct qseecom_client_send_data_64bit_ireq {
 	uint32_t qsee_cmd_id;
 	uint32_t app_id;
@@ -180,7 +169,6 @@ __packed struct qseecom_client_send_data_64bit_ireq {
 	uint32_t sglistinfo_len;
 };
 
->>>>>>> d048365... qseecom: support whitelist memory for qseecom_send_modfd_cmd
 __packed struct qseecom_reg_log_buf_ireq {
 	uint32_t qsee_cmd_id;
 	uint32_t phy_addr;
@@ -271,8 +259,7 @@ __packed struct qseecom_qteec_ireq {
 	uint32_t    sglistinfo_len;
 };
 
-<<<<<<< HEAD
-=======
+
 __packed struct qseecom_qteec_64bit_ireq {
 	uint32_t    qsee_cmd_id;
 	uint32_t    app_id;
@@ -284,7 +271,6 @@ __packed struct qseecom_qteec_64bit_ireq {
 	uint32_t    sglistinfo_len;
 };
 
->>>>>>> d048365... qseecom: support whitelist memory for qseecom_send_modfd_cmd
 __packed struct qseecom_client_send_fsm_key_req {
 	uint32_t qsee_cmd_id;
 	uint32_t req_ptr;
@@ -566,8 +552,6 @@ __packed struct qseecom_client_send_fsm_key_req {
 	TZ_SYSCALL_PARAM_TYPE_VAL, TZ_SYSCALL_PARAM_TYPE_BUF_RW, \
 	TZ_SYSCALL_PARAM_TYPE_VAL)
 
-<<<<<<< HEAD
-=======
 #define TZ_APP_GPAPP_OPEN_SESSION_ID					\
 	TZ_SYSCALL_CREATE_SMC_ID(TZ_OWNER_TZ_APPS,			\
 	TZ_SVC_APP_ID_PLACEHOLDER, 0x02)
@@ -656,5 +640,4 @@ __packed struct qseecom_client_send_fsm_key_req {
 	TZ_SYSCALL_PARAM_TYPE_VAL, TZ_SYSCALL_PARAM_TYPE_BUF_RW,	\
 	TZ_SYSCALL_PARAM_TYPE_VAL)
 
->>>>>>> d048365... qseecom: support whitelist memory for qseecom_send_modfd_cmd
 #endif /* __QSEECOMI_H_ */
