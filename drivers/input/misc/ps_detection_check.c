@@ -1,5 +1,5 @@
 /*
- * drivers/misc/touch_wake_fix.c
+ * drivers/input/misc/ps_detection_check.c
  *
  * Copyright (c) 2016, Vasilii Kovalev <vgdn1942@gmail.com>
  *

@@ -35,6 +35,9 @@
 /*
 #include <linux/wakelock.h>
 */
+#ifdef CONFIG_PS_DETECTION_CHECK
+#include <linux/input/ps_detection_check.h>
+#endif
 
 /* Tuneables */
 #define WG_DEBUG		0
@@ -176,8 +179,12 @@ static DECLARE_WORK(wake_presspwr_work, wake_presspwr);
 static void wake_pwrtrigger(void) {
 	pwrtrigger_time[1] = pwrtrigger_time[0];
 	pwrtrigger_time[0] = ktime_to_ms(ktime_get());
-	
+
+#ifdef CONFIG_PS_DETECTION_CHECK
+	if ((pwrtrigger_time[0] - pwrtrigger_time[1] < TRIGGER_TIMEOUT) || (device_is_pocketed()))
+#else
 	if (pwrtrigger_time[0] - pwrtrigger_time[1] < TRIGGER_TIMEOUT)
+#endif
 		return;
 
 	schedule_work(&wake_presspwr_work);
