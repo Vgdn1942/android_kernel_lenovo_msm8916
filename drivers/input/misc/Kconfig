@@ -910,5 +910,11 @@ config SENSORS_ST480
 	  To compile this driver as a module, choose M here: the
 	  module will be called akm09911.
 
+config PS_DETECTION_CHECK
+	bool "Debug for PocketMod & ps state"
+	default n
+	help
+	  Say Y here to enable debug.
+
 endif
 
