@@ -4243,8 +4243,6 @@ static int msm8x16_wcd_device_up(struct snd_soc_codec *codec)
 
 	u32 reg;
 
-	int ret = 0;
-
 	dev_dbg(codec->dev, "%s: device up!\n", __func__);
 
 	mutex_lock(&codec->mutex);
