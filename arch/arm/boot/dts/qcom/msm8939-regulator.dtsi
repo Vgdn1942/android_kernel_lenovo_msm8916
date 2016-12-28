@@ -214,7 +214,7 @@
 					<0   41   (-41)>, /* NOM + 20mv, TURBO - 20mv	*/
 					<0 (-104) (-41)>, /* NOM - 50mv, TURBO - 20mv	*/
 					<0   41   (-41)>, /* NOM + 20mv, TURBO - 20mv	*/
-					<0   41  (-124)>, /* NOM + 20mv, TURBO - 60mv	*/
+					<0 (-41) (-124)>, /* NOM - 20mv, TURBO - 60mv	*/
 					<0 (-144) (-41)>, /* NOM - 80mv, TURBO - 20mv	*/
 					<0  104  (-124)>, /* NOM + 50mv, TURBO - 60mv	*/
 					<0   41  (-124)>, /* NOM + 20mv, TURBO - 60mv	*/
@@ -388,7 +388,7 @@
 		pm8916_l1: regulator-l1 {
 			regulator-min-microvolt = <1200000>;
 			regulator-max-microvolt = <1245000>;
-			qcom,init-voltage = <1215000>;
+			qcom,init-voltage = <1225000>;
 			status = "okay";
 		};
 	};

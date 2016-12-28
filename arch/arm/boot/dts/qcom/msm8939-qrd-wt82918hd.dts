@@ -227,8 +227,8 @@
         qcom,iterm-ma = <100>;
         //qcom,recharge-mv = <50>;
         regulator-name = "sm5414_otg_vreg";
-        qcom,thermal-mitigation = <2350 1000 800 600>; //<2350 1000 800 0>;
-        qcom,fastchg-current-max-ma = <2500>;     
+        qcom,thermal-mitigation = <2400 1000 800 600>; //<2400 1000 800 0>;
+        qcom,fastchg-current-max-ma = <2450>;     
         //qcom,disable-apsd;
         qcom,bms-psy-name = "bms";
         qcom,iterm-disabled;

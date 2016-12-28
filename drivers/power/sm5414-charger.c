@@ -2053,7 +2053,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
             
-            sm5414_set_usb_chg_current(chip, 2350);
+            sm5414_set_usb_chg_current(chip, 2400);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
@@ -2805,3 +2805,4 @@ module_i2c_driver(sm5414_charger_driver);
 MODULE_DESCRIPTION("SM5414 Charger");
 MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("i2c:sm5414-charger");
+
