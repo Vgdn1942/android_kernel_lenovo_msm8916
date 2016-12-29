@@ -29,6 +29,9 @@
 #include <linux/mutex.h>
 #include <linux/qpnp/qpnp-adc.h>
 
+unsigned int quickchargecurrent = 1650;
+module_param(quickchargecurrent, int, 0755);
+
  /* constants */
 #define USB2_MIN_CURRENT_MA     100
 #define USB2_MAX_CURRENT_MA     550
@@ -39,7 +42,7 @@
 #define SM5414_IRQ_REG_COUNT        6
 #define SM5414_FAST_CHG_MIN_MA      100
 #define SM5414_FAST_CHG_MAX_MA      2500
-#define SM5414_DEFAULT_BATT_CAPACITY    50
+#define SM5414_DEFAULT_BATT_CAPACITY    65
 #define SM5414_BATT_GOOD_THRE_2P5   0x1
 
 /* 
@@ -279,7 +282,6 @@
 #define VBUSLIMIT_2350mA     44
 #define VBUSLIMIT_2400mA     45
 #define VBUSLIMIT_2450mA     46
-#define VBUSLIMIT_2500mA     47
 
 // AICL TH
 #define AICL_THRESHOLD_4_3_V         0
@@ -446,7 +448,7 @@ struct sm5414_charger {
     int         chgen_gpio; //nCHGN
     int         nshdn_gpio; //nSHDN
     int         charging_disabled; // state charging
-    int         fastchg_current_max_ma;
+    int fastchg_current_max_ma;	
     //Correction
     int psy_usb_ma;
     unsigned int        cool_bat_ma;
@@ -1157,7 +1159,7 @@ static int sm5414_get_prop_batt_health(struct sm5414_charger *chip)
         return ret.intval;
 }
 
-static int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
+unsigned int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
         int current_ma)
 {
     int i, rc = 0;
@@ -2052,8 +2054,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
             if (chip->batt_warm)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
-            
-            sm5414_set_usb_chg_current(chip, 2400);
+            sm5414_set_usb_chg_current(chip, quickchargecurrent);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
@@ -2799,6 +2800,8 @@ static struct i2c_driver sm5414_charger_driver = {
     .remove     = sm5414_charger_remove,
     .id_table   = sm5414_charger_id,
 };
+
+
 
 module_i2c_driver(sm5414_charger_driver);
 
