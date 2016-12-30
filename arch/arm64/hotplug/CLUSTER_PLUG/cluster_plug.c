@@ -27,10 +27,6 @@
 #include <linux/powersuspend.h>
 #endif
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
-#endif
-
 //#define DEBUG_CLUSTER_PLUG
 #undef DEBUG_CLUSTER_PLUG
 
@@ -38,8 +34,8 @@
 #define CLUSTER_PLUG_MINOR_VERSION	0
 
 #define DEF_HYSTERESIS			(10)
-#define DEF_LOAD_THRESH			(70)
-#define DEF_SAMPLING_MS			(200)
+#define DEF_LOAD_THRESH			(85)
+#define DEF_SAMPLING_MS			(350)
 
 static DEFINE_MUTEX(cluster_plug_mutex);
 static struct delayed_work cluster_plug_work;
@@ -146,7 +142,7 @@ static void __ref cluster_plug_work_fn(struct work_struct *work)
 		msecs_to_jiffies(sampling_time));
 }
 
-#if defined(CONFIG_POWERSUSPEND) || defined(CONFIG_HAS_EARLYSUSPEND)
+#if defined(CONFIG_POWERSUSPEND) 
 
 #ifdef CONFIG_POWERSUSPEND
 static void __ref cluster_plug_suspend(struct power_suspend *handler)
@@ -205,14 +201,6 @@ static struct power_suspend cluster_plug_power_suspend_driver = {
 };
 #endif  /* CONFIG_POWERSUSPEND */
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-static struct early_suspend cluster_plug_early_suspend_driver = {
-        .level = EARLY_SUSPEND_LEVEL_DISABLE_FB + 10,
-        .suspend = cluster_plug_suspend,
-        .resume = cluster_plug_resume,
-};
-#endif	/* CONFIG_HAS_EARLYSUSPEND */
-
 int __init cluster_plug_init(void)
 {
 	pr_info("cluster_plug: version %d.%d by sultanqasim\n",
@@ -222,10 +210,6 @@ int __init cluster_plug_init(void)
 #ifdef CONFIG_POWERSUSPEND
 	register_power_suspend(&cluster_plug_power_suspend_driver);
 #endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	register_early_suspend(&cluster_plug_early_suspend_driver);
-#endif
-
 	clusterplug_wq = alloc_workqueue("clusterplug",
 				WQ_HIGHPRI | WQ_UNBOUND, 1);
 	INIT_DELAYED_WORK(&cluster_plug_work, cluster_plug_work_fn);

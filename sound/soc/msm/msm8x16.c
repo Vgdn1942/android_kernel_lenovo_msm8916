@@ -57,7 +57,6 @@
 
 static struct delayed_work lineout_amp_enable;
 static struct delayed_work lineout_amp_dualmode;
-//struct delayed_work lineout_amp_disable;
 
 #define WCD_MBHC_DEF_RLOADS 5
 
@@ -86,9 +85,9 @@ static struct wcd_mbhc_config mbhc_cfg = {
 	.read_fw_bin = false,
 	.calibration = NULL,
 	.detect_extn_cable = true,
-	.mono_stero_detection = false,
+	.mono_stero_detection = true,
 	.swap_gnd_mic = NULL,
-	.hs_ext_micbias = false,
+	.hs_ext_micbias = true,
 };
 
 static struct wcd9xxx_mbhc_config wcd9xxx_mbhc_cfg = {
@@ -342,7 +341,7 @@ static int msm_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 					SNDRV_PCM_HW_PARAM_CHANNELS);
 
 	pr_debug("%s()\n", __func__);
-	rate->min = rate->max = 48000;
+	rate->min = rate->max = 192000;
 	channels->min = channels->max = 2;
 
 	return 0;
@@ -541,15 +540,14 @@ static int lineout_status_put(struct snd_kcontrol *kcontrol,
 	pr_debug("%s: external speaker PA mode:%d\n", __func__, state);
 
 	switch (state) {
-	case 1:
-		schedule_delayed_work(&lineout_amp_enable, msecs_to_jiffies(50));
-		break;
 	case 0:
-		//schedule_delayed_work(&lineout_amp_disable, msecs_to_jiffies(5));
 		msm8x16_ext_spk_control(0);
 		break;
+	case 1:
+		schedule_delayed_work(&lineout_amp_enable, msecs_to_jiffies(20));
+		break;
 	case 2:
-		schedule_delayed_work(&lineout_amp_dualmode, msecs_to_jiffies(50));
+		schedule_delayed_work(&lineout_amp_dualmode, msecs_to_jiffies(20));
 		break;
 	default:
 		pr_err("%s: Unexpected input value\n", __func__);

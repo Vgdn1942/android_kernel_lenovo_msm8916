@@ -1854,7 +1854,6 @@ static int msm_routing_ext_ec_put(struct snd_kcontrol *kcontrol,
 {
 	struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
 	struct snd_soc_dapm_widget *widget = wlist->widgets[0];
-	int mux = ucontrol->value.enumerated.item[0];
 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
 	int ret = 0;
 	bool state = false;
@@ -1887,7 +1886,6 @@ static int msm_routing_ext_ec_put(struct snd_kcontrol *kcontrol,
 	}
 	if (!voc_set_ext_ec_ref(msm_route_ext_ec_ref, state)) {
 		mutex_unlock(&routing_lock);
-		snd_soc_dapm_mux_update_power(widget, kcontrol, mux, e);
 	} else {
 		ret = -EINVAL;
 		mutex_unlock(&routing_lock);

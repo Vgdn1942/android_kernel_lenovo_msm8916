@@ -15,14 +15,13 @@ NAME = My little poney
 # o  use make's built-in rules and variables
 #    (this increases performance and avoids hard-to-debug behaviour);
 # o  print "Entering directory ...";
-MAKEFLAGS += -rR --no-print-directory CONFIG_NO_ERROR_ON_MISMATCH=y 
+MAKEFLAGS += -rR --no-print-directory
 
 # Avoid funny character set dependencies
 unexport LC_ALL
 LC_COLLATE=C
 LC_NUMERIC=C
 export LC_COLLATE LC_NUMERIC
-export CONFIG_NO_ERROR_ON_MISMATCH=y 
 # We are using a recursive build, so we need to do a little thinking
 # to get the ordering right.
 #
@@ -271,7 +270,7 @@ endif
 ifeq ($(MAKECMDGOALS),)
   KBUILD_MODULES := 1
 endif
-
+export CONFIG_NO_ERROR_ON_MISMATCH=y
 export KBUILD_MODULES KBUILD_BUILTIN
 export KBUILD_CHECKSRC KBUILD_SRC KBUILD_EXTMOD
 

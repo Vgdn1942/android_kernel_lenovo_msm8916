@@ -270,14 +270,14 @@
 			status = "ok";
 
 			qcom,v-cutoff-uv = <3400000>;
-			qcom,max-voltage-uv = <4350000>;
+			qcom,max-voltage-uv = <4400000>;
 			qcom,r-conn-mohm = <0>;
 			qcom,shutdown-soc-valid-limit = <100>;
 			qcom,low-soc-calculate-soc-threshold = <15>;
 			qcom,low-voltage-calculate-soc-ms = <1000>;
 			qcom,low-soc-calculate-soc-ms = <5000>;
-			qcom,calculate-soc-ms = <20000>;
-			qcom,volatge-soc-timeout-ms = <60000>;
+			qcom,calculate-soc-ms = <1000>;
+			qcom,volatge-soc-timeout-ms = <1000>;
 			qcom,low-voltage-threshold = <3450000>;
 			qcom,s3-ocv-tolerence-uv = <1200>;
 			qcom,s2-fifo-length = <5>;

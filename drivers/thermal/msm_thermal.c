@@ -53,7 +53,7 @@
 #define CPU_DEVICE "cpu%d"
 
 
-unsigned int temp_threshold = 50;
+unsigned int temp_threshold = 65;
 module_param(temp_threshold, int, 0755);
 
 static struct msm_thermal_data msm_thermal_info;
@@ -5551,4 +5551,5 @@ int __init msm_thermal_late_init(void)
 	return 0;
 }
 late_initcall(msm_thermal_late_init);
+
 

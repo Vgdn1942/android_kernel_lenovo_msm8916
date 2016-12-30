@@ -42,7 +42,7 @@ module_param(quickchargecurrent, int, 0755);
 #define SM5414_IRQ_REG_COUNT        6
 #define SM5414_FAST_CHG_MIN_MA      100
 #define SM5414_FAST_CHG_MAX_MA      2500
-#define SM5414_DEFAULT_BATT_CAPACITY    65
+#define SM5414_DEFAULT_BATT_CAPACITY    50
 #define SM5414_BATT_GOOD_THRE_2P5   0x1
 
 /* 

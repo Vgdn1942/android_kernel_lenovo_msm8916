@@ -223,7 +223,7 @@
         chgen-gpio = <&msm_gpio 114 0x00>; // nCHGEN Pin: Temp GPIO NUMBER
         nshdn-gpio = <&msm_gpio 20 0x00>; // nSHDN Pin: Temp GPIO NUMBER    
         sm-irq-gpio = <&msm_gpio 62 0x0>;           
-        qcom,float-voltage-mv = <4400>;
+        qcom,float-voltage-mv = <4475>;
         qcom,iterm-ma = <100>;
         //qcom,recharge-mv = <50>;
         regulator-name = "sm5414_otg_vreg";
@@ -382,3 +382,4 @@ chan@32 {
 	qcom,vadc-thermal-node;
 	};
 };
+
