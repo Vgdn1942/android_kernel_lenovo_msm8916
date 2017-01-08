@@ -269,4 +269,3 @@ done:
 MODULE_DESCRIPTION("FM SMD driver");
 MODULE_AUTHOR("Ankur Nandwani <ankurn@codeaurora.org>");
 MODULE_LICENSE("GPL v2");
-
