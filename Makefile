@@ -1,7 +1,7 @@
 VERSION = 3
 PATCHLEVEL = 10
 SUBLEVEL = 56
-EXTRAVERSION =
+EXTRAVERSION = .2
 NAME = TOSSUG Baby Fish
 
 # *DOCUMENTATION*
@@ -1457,3 +1457,4 @@ FORCE:
 # Declare the contents of the .PHONY variable as phony.  We keep that
 # information in a variable so we can use it in if_changed and friends.
 .PHONY: $(PHONY)
+

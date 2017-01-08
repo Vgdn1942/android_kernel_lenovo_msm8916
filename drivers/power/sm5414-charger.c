@@ -29,7 +29,7 @@
 #include <linux/mutex.h>
 #include <linux/qpnp/qpnp-adc.h>
 
-unsigned int quickchargecurrent = 1650;
+unsigned int quickchargecurrent = 1550;
 module_param(quickchargecurrent, int, 0755);
 
  /* constants */
@@ -282,6 +282,7 @@ module_param(quickchargecurrent, int, 0755);
 #define VBUSLIMIT_2350mA     44
 #define VBUSLIMIT_2400mA     45
 #define VBUSLIMIT_2450mA     46
+#define VBUSLIMIT_2500mA     47
 
 // AICL TH
 #define AICL_THRESHOLD_4_3_V         0
@@ -323,6 +324,10 @@ module_param(quickchargecurrent, int, 0755);
 #define BATREG_4_4_2_5_V    13
 #define BATREG_4_4_5_0_V    14
 #define BATREG_4_4_7_5_V    15
+#define BATREG_4_5_0_0_V    16
+#define BATREG_4_5_2_5_V    17
+#define BATREG_4_5_5_0_V    18
+#define BATREG_4_5_7_5_V    19
 #define BATREG_MASK       0x0F
 
 // Weak Battery Voltage
@@ -664,7 +669,7 @@ static int sm5414_fastchg_current_set(struct sm5414_charger *chip,
 }
 
 #define MIN_FLOAT_MV        4100
-#define MAX_FLOAT_MV        4475
+#define MAX_FLOAT_MV        4575
 #define VFLOAT_STEP_MV      25
 //BATREG
 static int sm5414_float_voltage_set(struct sm5414_charger *chip, int vfloat_mv)

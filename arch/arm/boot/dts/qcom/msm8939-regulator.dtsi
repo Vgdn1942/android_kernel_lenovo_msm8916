@@ -84,8 +84,8 @@
 		regulator-max-microvolt = <28>;
 
 		qcom,cpr-fuse-corners = <3>;
-		qcom,cpr-voltage-ceiling = <1040000 1080000 1350000>;
-		qcom,cpr-voltage-floor = <1040000 1040000 1115000>;
+		qcom,cpr-voltage-ceiling = <1040000 1095000 1350000>;
+		qcom,cpr-voltage-floor = <1040000 1050000 1125000>;
 		vdd-apc-supply = <&ncp6335d>;
 		vdd-apc-optional-prim-supply = <&ncp6335d>;
 		vdd-apc-optional-sec-supply = <&fan53555>;
@@ -115,7 +115,7 @@
 		qcom,cpr-fuse-target-quot = <42 24 6>;
 		qcom,cpr-fuse-ro-sel = <54 54 54>;
 		qcom,cpr-quot-min-diff = <0>;
-		qcom,cpr-init-voltage-ref = <1045000 1130000 1340000>;
+		qcom,cpr-init-voltage-ref = <1055000 1150000 1340000>;
 		qcom,cpr-fuse-init-voltage =
 					<27 36 6 0>,
 					<27 18 6 0>,
@@ -189,7 +189,7 @@
 			<0xffffffff 0xffffffff 2 0xffffffff 0xffffffff 0xffffffff>,
 			<0xffffffff 0xffffffff 3 0xffffffff 0xffffffff 0xffffffff>;
 		qcom,cpr-init-voltage-adjustment =
-					<0 (-50000) 0>,
+					<0   50000  0>,
 					<0 (-20000) 0>,
 					<0 (-50000) 0>,
 					<0 (-20000) 0>,
@@ -206,7 +206,7 @@
 					<0 (-50000) 0>,
 					<0 (-20000) 0>;
 		qcom,cpr-quotient-adjustment =
-					<0 (-104) (-41)>, /* NOM - 50mv, TURBO - 20mv	*/
+					<0  104 (-41)>,   /* NOM + 50mv, TURBO - 20mv	*/
 					<0   41   (-41)>, /* NOM + 20mv, TURBO - 20mv	*/
 					<0  104   (-41)>, /* NOM + 50mv, TURBO - 20mv	*/
 					<0 (-41)  (-41)>, /* NOM - 20mv, TURBO - 20mv	*/
@@ -221,7 +221,7 @@
 					<0 (-124) (-41)>, /* NOM - 60mv, TURBO - 20mv	*/
 					<0   41   (-41)>, /* NOM + 20mv, TURBO - 20mv	*/
 					<0  104   (-41)>, /* NOM + 50mv, TURBO - 20mv	*/
-					<0 (-41)  (-41)>; /* NOM - 20mv, TURBO - 20mv	*/
+					<0   41  (-41)>; /* NOM + 20mv, TURBO - 20mv	*/
 		qcom,cpr-fuse-min-quot-diff = <0 0 40>;
 		qcom,cpr-min-quot-diff-adjustment =
 					<0 0 40>,
@@ -293,8 +293,8 @@
 		qcom,cpr-voltage-floor-override =
 			<0xffffffff 0xffffffff 1030000 1030000 1030000 1030000
 			1030000 1030000 1030000 1030000 1030000 1030000 1030000
-			1030000 1045000 1060000 1070000 1075000 1075000 1075000
-			1075000 1075000 1085000 1137000 1137500 1157500 1225000
+			1030000 1050000 1065000 1070000 1075000 1080000 1080000
+			1080000 1085000 1095000 1137000 1137500 1157500 1225000
 			1275000 1300000 1345000>;
 		qcom,cpr-enable;
 	};
