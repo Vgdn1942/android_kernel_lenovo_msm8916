@@ -1120,4 +1120,3 @@ static inline int is_valid_blend_value(int val)
 }
 
 #endif /* __UAPI_RADIO_HCI_CORE_H */
-
