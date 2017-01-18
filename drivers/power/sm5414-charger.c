@@ -29,7 +29,7 @@
 #include <linux/mutex.h>
 #include <linux/qpnp/qpnp-adc.h>
 
-unsigned int quickchargecurrent = 1550;
+unsigned int quickchargecurrent = 1750;
 module_param(quickchargecurrent, int, 0755);
 
  /* constants */

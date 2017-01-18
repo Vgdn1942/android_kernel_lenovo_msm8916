@@ -271,8 +271,8 @@
 	
 	qcom,battery-data = <&mtp_batterydata>;
 	//+Other_platform_modify 20150927 huangfusheng.wt add dts config from pm8916 
-       	qcom,v-cutoff-uv = <3400000>;
-	qcom,max-voltage-uv = <4425000>;
+       	qcom,v-cutoff-uv = <3350000>;
+	qcom,max-voltage-uv = <4450000>;
 	qcom,r-conn-mohm = <0>;
 	qcom,shutdown-soc-valid-limit = <100>;
 	qcom,low-soc-calculate-soc-threshold = <15>;

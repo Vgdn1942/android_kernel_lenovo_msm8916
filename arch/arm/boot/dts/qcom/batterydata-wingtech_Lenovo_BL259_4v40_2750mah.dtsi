@@ -12,14 +12,14 @@
 
 
 qcom,wingtech_Lenovo_BL259_4v40_2750mah-data {
-	qcom,default-rbatt-mohm = <120>;
-	qcom,max-voltage-uv = <4425000>;
+	qcom,default-rbatt-mohm = <125>;
+	qcom,max-voltage-uv = <4450000>;
 	qcom,fcc-mah = <2750>;
 	qcom,rbatt-capacitive-mohm = <0>;
-	qcom,v-cutoff-uv = <3400000>;
+	qcom,v-cutoff-uv = <3350000>;
 	qcom,chg-term-ua = <100000>;
 	qcom,batt-id-kohm = <110>;
-	qcom,flat-ocv-threshold-uv = <3800000>;
+	qcom,flat-ocv-threshold-uv = <3850000>;
 	qcom,battery-type = "wingtech_Lenovo_BL259_4v40_2750mah";
 
 	qcom,fcc-temp-lut {
@@ -36,7 +36,7 @@ qcom,wingtech_Lenovo_BL259_4v40_2750mah-data {
 					<10 9 8 7 6>,
 					<5 4 3 2 1>,
 					<0>;
-		  qcom,lut-data = <4365 4365 4365 4365 4365>, //100
+		  qcom,lut-data = <4450 4450 4450 4450 4450>, //100
 				<4280 4312 4314 4310 4306>,   //95
 				<4206 4250 4253 4250 4246>,   //90
 				<4140 4192 4194 4192 4188>,   //85
