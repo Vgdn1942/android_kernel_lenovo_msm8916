@@ -70,6 +70,7 @@ static int snd_hrtimer_open(struct snd_timer *t)
 	stime->hrt.function = snd_hrtimer_callback;
 	atomic_set(&stime->running, 0);
 	t->private_data = stime;
+	hrtimer_try_to_cancel(&stime->hrt);
 	return 0;
 }
 
@@ -78,7 +79,7 @@ static int snd_hrtimer_close(struct snd_timer *t)
 	struct snd_hrtimer *stime = t->private_data;
 
 	if (stime) {
-		hrtimer_cancel(&stime->hrt);
+		hrtimer_try_to_cancel(&stime->hrt);
 		kfree(stime);
 		t->private_data = NULL;
 	}
