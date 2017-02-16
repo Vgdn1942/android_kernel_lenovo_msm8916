@@ -99,12 +99,12 @@ enum {
 
 #define MICBIAS_DEFAULT_VAL 1800000
 #define MICBIAS_MIN_VAL 1600000
-#define MICBIAS_STEP_SIZE 50000
+#define MICBIAS_STEP_SIZE 25000
 
 #define DEFAULT_BOOST_VOLTAGE 5000
 #define MIN_BOOST_VOLTAGE 4000
 #define MAX_BOOST_VOLTAGE 5550
-#define BOOST_VOLTAGE_STEP 50
+#define BOOST_VOLTAGE_STEP 25
 
 #define VOLTAGE_CONVERTER(value, min_value, step_size)\
 	((value - min_value)/step_size);
