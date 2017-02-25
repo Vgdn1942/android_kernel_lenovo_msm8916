@@ -78,7 +78,7 @@
  *50 Milliseconds sufficient for DSP bring up in the modem
  * after Sub System Restart
  */
-#define ADSP_STATE_READY_TIMEOUT_MS 20
+#define ADSP_STATE_READY_TIMEOUT_MS 50
 
 #define HPHL_PA_DISABLE (0x01 << 1)
 #define HPHR_PA_DISABLE (0x01 << 2)
@@ -99,12 +99,12 @@ enum {
 
 #define MICBIAS_DEFAULT_VAL 1800000
 #define MICBIAS_MIN_VAL 1600000
-#define MICBIAS_STEP_SIZE 25000
+#define MICBIAS_STEP_SIZE 50000
 
 #define DEFAULT_BOOST_VOLTAGE 5000
 #define MIN_BOOST_VOLTAGE 4000
 #define MAX_BOOST_VOLTAGE 5550
-#define BOOST_VOLTAGE_STEP 25
+#define BOOST_VOLTAGE_STEP 50
 
 #define VOLTAGE_CONVERTER(value, min_value, step_size)\
 	((value - min_value)/step_size);
@@ -521,7 +521,7 @@ static int __msm8x16_wcd_reg_write(struct snd_soc_codec *codec,
 			ret = msm8x16_wcd_ahb_write_device(
 						msm8x16_wcd, reg, &val, 1);
 			atomic_set(&pdata->mclk_enabled, true);
-			schedule_delayed_work(&pdata->disable_mclk_work, 20);
+			schedule_delayed_work(&pdata->disable_mclk_work, 50);
 err:
 			mutex_unlock(&pdata->cdc_mclk_mutex);
 			mutex_unlock(&msm8x16_wcd->io_lock);
@@ -547,23 +547,10 @@ static int msm8x16_wcd_readable(struct snd_soc_codec *ssc, unsigned int reg)
 	return msm8x16_wcd_reg_readable[reg];
 }
 
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-extern int snd_ctrl_enabled;
-extern int snd_hax_reg_access(unsigned int);
-extern unsigned int snd_hax_cache_read(unsigned int);
-extern void snd_hax_cache_write(unsigned int, unsigned int);
-#endif
-
-#ifndef CONFIG_SOUND_CONTROL_HAX_3_GPL 
-static
-#endif
-int msm8x16_wcd_write(struct snd_soc_codec *codec, unsigned int reg,
+static int msm8x16_wcd_write(struct snd_soc_codec *codec, unsigned int reg,
 			     unsigned int value)
 {
 	int ret;
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-	int val;
-#endif
 	struct msm8x16_wcd_priv *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
 
 	dev_dbg(codec->dev, "%s: Write from reg 0x%x val 0x%x\n",
@@ -583,32 +570,10 @@ int msm8x16_wcd_write(struct snd_soc_codec *codec, unsigned int reg,
 				reg);
 		return -ENODEV;
 	} else
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-  		if (!snd_ctrl_enabled)
-  			return __msm8x16_wcd_reg_write(codec, reg, (u8)value);
-  
-  		if (!snd_hax_reg_access(reg)) {
-  			if (!((val = snd_hax_cache_read(reg)) != -1)) {
-  				val = wcd9xxx_reg_read_safe(codec->control_data, reg);
-  			}
-  		} else {
-  			snd_hax_cache_write(reg, value);
-  			val = value;
-  		}
- 		return __msm8x16_wcd_reg_write(codec, reg, val);
-#else
 		return __msm8x16_wcd_reg_write(codec, reg, (u8)value);
-#endif
 }
 
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-EXPORT_SYMBOL(msm8x16_wcd_write);
-#endif
-
-#ifndef CONFIG_SOUND_CONTROL_HAX_3_GPL 
-static
-#endif
-unsigned int msm8x16_wcd_read(struct snd_soc_codec *codec,
+static unsigned int msm8x16_wcd_read(struct snd_soc_codec *codec,
 				unsigned int reg)
 {
 	unsigned int val;
@@ -640,11 +605,6 @@ unsigned int msm8x16_wcd_read(struct snd_soc_codec *codec,
 					__func__, reg, val);
 	return val;
 }
-
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-EXPORT_SYMBOL(msm8x16_wcd_read);
-#endif
- 
 
 static void msm8x16_wcd_boost_on(struct snd_soc_codec *codec)
 {
@@ -3697,12 +3657,17 @@ static int msm8x16_wcd_codec_enable_rx_chain(struct snd_soc_dapm_widget *w,
 
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:
-		dev_dbg(w->codec->dev, "%s: [PMU]\n", __func__);
+		dev_dbg(w->codec->dev,
+			"%s: PMU:Sleeping 20ms after disabling mute\n",
+			__func__);
 		break;
 	case SND_SOC_DAPM_POST_PMD:
-		dev_dbg(w->codec->dev, "%s: [PMD]\n", __func__);
+		dev_dbg(w->codec->dev,
+			"%s: PMD:Sleeping 20ms after disabling mute\n",
+			__func__);
 		snd_soc_update_bits(codec, w->reg,
 			    1 << w->shift, 0x00);
+		msleep(20);
 		break;
 	}
 	return 0;
@@ -4240,15 +4205,12 @@ static int msm8x16_wcd_device_up(struct snd_soc_codec *codec)
 {
 	struct msm8x16_wcd_priv *msm8x16_wcd_priv =
 		snd_soc_codec_get_drvdata(codec);
-
 	u32 reg;
-
 	dev_dbg(codec->dev, "%s: device up!\n", __func__);
 
 	mutex_lock(&codec->mutex);
 
 	clear_bit(BUS_DOWN, &msm8x16_wcd_priv->status_mask);
-
 
 	for (reg = 0; reg < ARRAY_SIZE(msm8x16_wcd_reset_reg_defaults); reg++)
 		if (msm8x16_wcd_reg_readable[reg])
@@ -4266,8 +4228,6 @@ static int msm8x16_wcd_device_up(struct snd_soc_codec *codec)
 			return -ENOMEM;
 		}
 	}
-
-
 
 	snd_soc_card_change_online_state(codec->card, 1);
 	/* delay is required to make sure sound card state updated */
@@ -4423,15 +4383,6 @@ static void msm8x16_wcd_configure_cap(struct snd_soc_codec *codec,
 	}
 }
 
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-struct snd_soc_codec *fauxsound_codec_ptr;
-EXPORT_SYMBOL(fauxsound_codec_ptr);
-int wcd9xxx_hw_revision;
-EXPORT_SYMBOL(wcd9xxx_hw_revision);
-#endif
- 
- 
-
 static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
 {
 	struct msm8x16_wcd_priv *msm8x16_wcd_priv;
@@ -4439,12 +4390,6 @@ static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
 	int i, ret;
 
 	dev_dbg(codec->dev, "%s()\n", __func__);
-
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-	pr_info("msm8x16_wcd codec probe...\n");
-	fauxsound_codec_ptr = codec;
-#endif
- 
 
 	msm8x16_wcd_priv = kzalloc(sizeof(struct msm8x16_wcd_priv), GFP_KERNEL);
 	if (!msm8x16_wcd_priv) {
@@ -4483,9 +4428,6 @@ static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
 		dev_dbg(codec->dev, "%s :Conga REV: %d\n", __func__,
 					msm8x16_wcd_priv->codec_version);
 		msm8x16_wcd_priv->ext_spk_boost_set = true;
-#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-		wcd9xxx_hw_revision = 1;
-#endif
 	} else {
 		dev_dbg(codec->dev, "%s :PMIC REV: %d\n", __func__,
 					msm8x16_wcd_priv->pmic_rev);
@@ -4804,7 +4746,7 @@ static int msm8x16_wcd_enable_static_supplies(struct msm8x16_wcd *msm8x16,
 		}
 	}
 
-	while (ret && (--i > 0))
+	while (ret && --i)
 		if (!pdata->regulator[i].ondemand)
 			regulator_disable(msm8x16->supplies[i].consumer);
 

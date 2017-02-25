@@ -50,13 +50,14 @@
 #define WCD9XXX_MBHC_DEF_RLOADS 5
 #define DEFAULT_MCLK_RATE 9600000
 
-#define EXT_CLASS_D_EN_DELAY 10000
-#define EXT_CLASS_D_DIS_DELAY 1000
+#define EXT_CLASS_D_EN_DELAY 13000
+#define EXT_CLASS_D_DIS_DELAY 3000
 #define EXT_CLASS_D_DELAY_DELTA 2000
 #define AW8155A_MODE 3
 
 static struct delayed_work lineout_amp_enable;
 static struct delayed_work lineout_amp_dualmode;
+//struct delayed_work lineout_amp_disable;
 
 #define WCD_MBHC_DEF_RLOADS 5
 
@@ -85,9 +86,9 @@ static struct wcd_mbhc_config mbhc_cfg = {
 	.read_fw_bin = false,
 	.calibration = NULL,
 	.detect_extn_cable = true,
-	.mono_stero_detection = true,
+	.mono_stero_detection = false,
 	.swap_gnd_mic = NULL,
-	.hs_ext_micbias = true,
+	.hs_ext_micbias = false,
 };
 
 static struct wcd9xxx_mbhc_config wcd9xxx_mbhc_cfg = {
@@ -163,30 +164,30 @@ void *def_tapan_mbhc_cal(void)
 	btn_high = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg,
 					       MBHC_BTN_DET_V_BTN_HIGH);
 	btn_low[0] = -50;
-	btn_high[0] = 90;
-	btn_low[1] = 130;
-	btn_high[1] = 220;
-	btn_low[2] = 235;
-	btn_high[2] = 335;
-	btn_low[3] = 375;
-	btn_high[3] = 655;
-	btn_low[4] = 656;
-	btn_high[4] = 660;
-	btn_low[5] = 661;
-	btn_high[5] = 670;
-	btn_low[6] = 671;
-	btn_high[6] = 680;
-	btn_low[7] = 681;
-	btn_high[7] = 690;
+	btn_high[0] = 20;
+	btn_low[1] = 21;
+	btn_high[1] = 61;
+	btn_low[2] = 62;
+	btn_high[2] = 104;
+	btn_low[3] = 105;
+	btn_high[3] = 148;
+	btn_low[4] = 149;
+	btn_high[4] = 189;
+	btn_low[5] = 190;
+	btn_high[5] = 228;
+	btn_low[6] = 229;
+	btn_high[6] = 269;
+	btn_low[7] = 270;
+	btn_high[7] = 500;
 	n_ready = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_N_READY);
 	n_ready[0] = 80;
-	n_ready[1] = 68;
+	n_ready[1] = 12;
 	n_cic = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_N_CIC);
 	n_cic[0] = 60;
 	n_cic[1] = 47;
 	gain = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_GAIN);
 	gain[0] = 11;
-	gain[1] = 9;
+	gain[1] = 14;
 	return tapan_cal;
 }
 
@@ -341,7 +342,7 @@ static int msm_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 					SNDRV_PCM_HW_PARAM_CHANNELS);
 
 	pr_debug("%s()\n", __func__);
-	rate->min = rate->max = 192000;
+	rate->min = rate->max = 48000;
 	channels->min = channels->max = 2;
 
 	return 0;
@@ -485,6 +486,7 @@ static int loopback_mclk_put(struct snd_kcontrol *kcontrol,
 	}
 	return ret;
 }
+
 static void msm8x16_ext_spk_delayed_enable(struct work_struct *work)
 {
     int i = 0;
@@ -540,14 +542,15 @@ static int lineout_status_put(struct snd_kcontrol *kcontrol,
 	pr_debug("%s: external speaker PA mode:%d\n", __func__, state);
 
 	switch (state) {
+	case 1:
+		schedule_delayed_work(&lineout_amp_enable, msecs_to_jiffies(50));
+		break;
 	case 0:
+		//schedule_delayed_work(&lineout_amp_disable, msecs_to_jiffies(5));
 		msm8x16_ext_spk_control(0);
 		break;
-	case 1:
-		schedule_delayed_work(&lineout_amp_enable, msecs_to_jiffies(20));
-		break;
 	case 2:
-		schedule_delayed_work(&lineout_amp_dualmode, msecs_to_jiffies(20));
+		schedule_delayed_work(&lineout_amp_dualmode, msecs_to_jiffies(50));
 		break;
 	default:
 		pr_err("%s: Unexpected input value\n", __func__);
@@ -1479,16 +1482,16 @@ static void *def_msm8x16_wcd_mbhc_cal(void)
 	 * 210-290 == Button 2
 	 * 360-680 == Button 3
 	 */
-	btn_low[0] = 75;
-	btn_high[0] = 75;
-	btn_low[1] = 150;
-	btn_high[1] = 150;
-	btn_low[2] = 237;
-	btn_high[2] = 237;
-	btn_low[3] = 450;
-	btn_high[3] = 450;
-	btn_low[4] = 500;
-	btn_high[4] = 500;
+	btn_low[0] = 87;
+	btn_high[0] = 87;
+	btn_low[1] = 255;
+	btn_high[1] = 237;
+	btn_low[2] = 325;
+	btn_high[2] = 400;
+	btn_low[3] = 425;
+	btn_high[3] = 575;
+	btn_low[4] = 525;
+	btn_high[4] = 735;
 
 	return msm8x16_wcd_cal;
 }

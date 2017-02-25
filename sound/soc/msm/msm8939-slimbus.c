@@ -74,8 +74,8 @@
 #define LPASS_CSR_GP_IO_MUX_MIC_CTL 0x07702000
 #define LPASS_CSR_GP_IO_MUX_SPKR_CTL 0x07702004
 
-#define ADSP_STATE_READY_TIMEOUT_MS    20
-#define HS_STARTWORK_TIMEOUT		2000
+#define ADSP_STATE_READY_TIMEOUT_MS    50
+#define HS_STARTWORK_TIMEOUT		4000
 
 static int slim0_rx_sample_rate = SAMPLING_RATE_48KHZ;
 static int slim0_rx_bit_format = SNDRV_PCM_FORMAT_S16_LE;
@@ -199,13 +199,13 @@ static void *def_codec_mbhc_cal(void)
 	btn_high[7] = 690;
 	n_ready = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_N_READY);
 	n_ready[0] = 80;
-	n_ready[1] = 68;
+	n_ready[1] = 12;
 	n_cic = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_N_CIC);
 	n_cic[0] = 60;
 	n_cic[1] = 47;
 	gain = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_GAIN);
 	gain[0] = 11;
-	gain[1] = 9;
+	gain[1] = 14;
 	return tapan_cal;
 }
 
