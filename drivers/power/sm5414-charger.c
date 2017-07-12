@@ -1,4 +1,4 @@
-/* Copyright (c) 2014 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2017 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,20 +29,27 @@
 #include <linux/mutex.h>
 #include <linux/qpnp/qpnp-adc.h>
 
-unsigned int quickchargecurrent = 1750;
+/*Module parameter to set External DC Power Supply maximum current*/
+
+unsigned int quickchargecurrent = 1200; /*Wakeup Current of 1,2A*/
 module_param(quickchargecurrent, int, 0755);
+
+/*Module parameter to set External USB Power Supply maximum current*/
+
+unsigned int usbcurrent = 750; /*Overcurrent USB - 700mA (stock 500mA)*/
+module_param(usbcurrent, int, 0755);
 
  /* constants */
 #define USB2_MIN_CURRENT_MA     100
-#define USB2_MAX_CURRENT_MA     550
+#define USB2_MAX_CURRENT_MA     1250
 #define USB3_MIN_CURRENT_MA     150
-#define USB3_MAX_CURRENT_MA     900
+#define USB3_MAX_CURRENT_MA     1750
 #define AC_CHG_CURRENT_MASK     0x70
 #define AC_CHG_CURRENT_SHIFT        4
 #define SM5414_IRQ_REG_COUNT        6
 #define SM5414_FAST_CHG_MIN_MA      100
 #define SM5414_FAST_CHG_MAX_MA      2500
-#define SM5414_DEFAULT_BATT_CAPACITY    50
+#define SM5414_DEFAULT_BATT_CAPACITY    65
 #define SM5414_BATT_GOOD_THRE_2P5   0x1
 
 /* 
@@ -1182,11 +1189,11 @@ unsigned int sm5414_set_usb_chg_current(struct sm5414_charger *chip,
         /* USB 2.0 - 100mA */
         i = VBUSLIMIT_100mA;
     } else if (current_ma == USB2_MAX_CURRENT_MA) {
-        /* USB 2.0 - 550mA */
-        i = VBUSLIMIT_550mA;
+        /* USB 2.0 - 1250mA */
+        i = VBUSLIMIT_1250mA;
     } else if (current_ma == USB3_MAX_CURRENT_MA) {
-        /* USB 3.0 - 900mA */
-        i = VBUSLIMIT_900mA;
+        /* USB 3.0 - 1750mA */
+        i = VBUSLIMIT_1750mA;
     } else if (current_ma > USB2_MAX_CURRENT_MA) {
         /* HC mode  - if none of the above */
 
@@ -2041,7 +2048,7 @@ static void sm5414_external_power_changed(struct power_supply *psy)
                 vddmax = min(vddmax, chip->warm_bat_mv);
             sm5414_float_voltage_set(chip, vddmax);
 
-            sm5414_set_usb_chg_current(chip, 550);
+            sm5414_set_usb_chg_current(chip, usbcurrent);
             
             current_max = chip->fastchg_current_max_ma;
             if (chip->batt_cool)
