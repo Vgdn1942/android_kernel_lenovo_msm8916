@@ -28,7 +28,7 @@
 #include <soc/qcom/ramdump.h>
 #include <linux/msm-bus.h>
 #include <linux/msm-bus-board.h>
-#include <mach/msm_memtypes.h>
+/*#include <mach/msm_memtypes.h>*/
 #include <soc/qcom/ocmem.h>
 #include <sound/q6core.h>
 #include "audio_ocmem.h"

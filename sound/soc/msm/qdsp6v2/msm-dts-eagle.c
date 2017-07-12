@@ -31,7 +31,7 @@
 
 #include "msm-pcm-routing-v2.h"
 #include "msm-dts-eagle.h"
-#include "q6core.h"
+#include <sound/q6core.h>
 
 #define ION_MEM_SIZE  131072
 #define DEPC_MAX_SIZE 524288
