@@ -15,7 +15,7 @@
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
 #include <linux/device.h>
-#include <linux/pr_debug.h>
+#include <linux/printk.h>
 #include <linux/ratelimit.h>
 #include <linux/list.h>
 #include <linux/bitops.h>
@@ -2288,3 +2288,4 @@ EXPORT_SYMBOL(wcd_mbhc_deinit);
 
 MODULE_DESCRIPTION("wcd MBHC v2 module");
 MODULE_LICENSE("GPL v2");
+
